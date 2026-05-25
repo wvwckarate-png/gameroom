@@ -164,13 +164,13 @@
         <div class="sys-count" id="count-gba"></div>
       </div>
 
-      <div class="system-card coming-soon" style="border:2px solid #55555533;">
-        <div class="top-bar" style="background:#555;"></div>
+      <div class="system-card" style="border:2px solid #c0a02044;" id="card-n64">
+        <div class="top-bar" style="background:#c0a020;"></div>
         <div class="icon-wrap">
-          <img src="icons/n64.svg" alt="N64" style="filter:invert(1) opacity(0.5);">
+          <img src="icons/n64.svg" alt="N64" style="filter:invert(1) drop-shadow(0 0 6px rgba(192,160,32,0.4));">
         </div>
-        <div class="sys-label" style="color:#555;">N64</div>
-        <div class="sys-coming">COMING SOON</div>
+        <div class="sys-label" style="color:#c0a020;">N64</div>
+        <div class="sys-count" id="count-n64"></div>
       </div>
 
     </div>
@@ -212,7 +212,8 @@ var SYSTEMS = {
   snes:    { label: "SNES",     color: "#6a3db8" },
   genesis: { label: "GENESIS",  color: "#1a6fb5" },
   gameboy: { label: "GAME BOY", color: "#4a7c59" },
-  gba:     { label: "GBA",      color: "#7b3fa0" }
+  gba:     { label: "GBA",      color: "#7b3fa0" },
+  n64:     { label: "N64",      color: "#c0a020" }
 };
 
 var EMU_CORES = {
@@ -220,10 +221,29 @@ var EMU_CORES = {
   snes:    "snes",
   genesis: "segaMD",
   gameboy: "gb",
-  gba:     "gba"
+  gba:     "gba",
+  n64:     "n64"
 };
 
 var GAMES = {
+  n64: [
+    { title: "007 - GoldenEye", file: "007 - GoldenEye.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/GoldenEye%20007%20%28USA%29.png" },
+    { title: "Castlevania", file: "Castlevania.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Castlevania%20%28USA%29.png" },
+    { title: "Castlevania - Legacy of Darkness", file: "Castlevania - Legacy of Darkness.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Castlevania%20-%20Legacy%20of%20Darkness%20%28USA%29.png" },
+    { title: "Diddy Kong Racing", file: "Diddy Kong Racing.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Diddy%20Kong%20Racing%20%28USA%29.png" },
+    { title: "Donkey Kong 64", file: "Donkey Kong 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Donkey%20Kong%2064%20%28USA%29.png" },
+    { title: "Dr. Mario 64", file: "Dr. Mario 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Dr.%20Mario%2064%20%28USA%29.png" },
+    { title: "F-1 World Grand Prix", file: "F-1 World Grand Prix.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/F-1%20World%20Grand%20Prix%20%28USA%29.png" },
+    { title: "Legend of Zelda - Majoras Mask", file: "Legend of Zelda - Majoras Mask.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/The%20Legend%20of%20Zelda%20-%20Majora%27s%20Mask%20%28USA%29.png" },
+    { title: "Legend of Zelda - Ocarina of Time", file: "Legend of Zelda - Ocarina of Time.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/The%20Legend%20of%20Zelda%20-%20Ocarina%20of%20Time%20%28USA%29.png" },
+    { title: "Legend of Zelda - Ocarina of Time Master Quest", file: "Legend of Zelda Ocarina of Time - Master Quest.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/The%20Legend%20of%20Zelda%20-%20Ocarina%20of%20Time%20-%20Master%20Quest%20%28USA%29.png" },
+    { title: "Mario Kart 64", file: "Mario Kart 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Mario%20Kart%2064%20%28USA%29.png" },
+    { title: "Mega Man 64", file: "Mega Man 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Mega%20Man%2064%20%28USA%29.png" },
+    { title: "Namco Museum 64", file: "Namco Museum 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Namco%20Museum%2064%20%28USA%29.png" },
+    { title: "Star Fox 64", file: "Star Fox 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Star%20Fox%2064%20%28USA%29.png" },
+    { title: "Super Mario 64", file: "Super Mario 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Super%20Mario%2064%20%28USA%29.png" },
+    { title: "Super Smash Bros", file: "Super Smash Bros.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Super%20Smash%20Bros.%20%28USA%29.png" }
+  ],
   nes: [
     { title: "Battletoads", file: "Battletoads.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Battletoads%20%28USA%29.png" },
     { title: "Castlevania", file: "Castlevania.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Castlevania%20%28USA%29.png" },
@@ -414,6 +434,7 @@ document.getElementById('password-input').onkeydown = function(e) {
 document.getElementById('back-to-systems').onclick = function() { showScreen('systems'); };
 document.getElementById('back-to-library').onclick = function() { goBack('library'); };
 document.getElementById('back-to-systems-from-playing').onclick = function() { location.href = location.pathname; };
+document.getElementById('card-n64').onclick     = function() { openSystem('n64'); };
 document.getElementById('card-nes').onclick     = function() { openSystem('nes'); };
 document.getElementById('card-snes').onclick    = function() { openSystem('snes'); };
 document.getElementById('card-genesis').onclick = function() { openSystem('genesis'); };
