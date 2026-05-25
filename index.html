@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Room</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0f; font-family: 'Courier New', Courier, monospace; color: #e8e8e8; min-height: 100vh; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px); pointer-events: none; z-index: 1000; }
+    body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(255,220,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,220,0,0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: 0; pointer-events: none; }
+    .screen { display: none; position: relative; z-index: 1; min-height: 100vh; padding: 40px 20px; }
+    .screen.active { display: block; }
+    #login.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes glow { 0%,100%{text-shadow:0 0 10px #ffdc00,0 0 20px #ffdc00} 50%{text-shadow:0 0 20px #ffdc00,0 0 40px #ffdc00,0 0 60px #ffaa00} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+    .blink { animation: blink 1s infinite; }
+    .glow-text { animation: glow 2s ease-in-out infinite; color: #ffdc00; }
+    .float { animation: float 3s ease-in-out infinite; }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    .login-title { font-size: clamp(32px,6vw,64px); font-weight: bold; letter-spacing: 4px; margin-bottom: 8px; text-align: center; }
+    .login-subtitle { color: #888; font-size: 12px; letter-spacing: 6px; margin-bottom: 60px; }
+    .login-box { background: rgba(255,255,255,0.03); border: 2px solid #333; border-radius: 4px; padding: 40px; width: 100%; max-width: 360px; }
+    .label-top { font-size: 11px; letter-spacing: 3px; color: #ffdc00; margin-bottom: 20px; }
+    .field-label { font-size: 11px; color: #666; letter-spacing: 2px; margin-bottom: 8px; display: block; }
+    .login-box input { width: 100%; background: #0d0d0d; border: 2px solid #333; color: #ffdc00; font-size: 18px; padding: 12px 16px; border-radius: 2px; margin-bottom: 8px; font-family: inherit; letter-spacing: 4px; transition: border-color 0.2s; }
+    .login-box input:focus { outline: none; border-color: #ffdc00; }
+    .error-msg { color: #e8373c; font-size: 11px; letter-spacing: 1px; min-height: 18px; margin-bottom: 4px; }
+    .btn-primary { width: 100%; background: #ffdc00; color: #0a0a0f; border: none; padding: 14px; font-size: 13px; font-family: inherit; font-weight: bold; letter-spacing: 3px; cursor: pointer; border-radius: 2px; margin-top: 8px; }
+    .btn-primary:hover { opacity: 0.9; }
+    .login-footer { color: #444; font-size: 11px; letter-spacing: 3px; margin-top: 40px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .page-title { font-size: clamp(20px,4vw,36px); font-weight: bold; color: #ffdc00; letter-spacing: 3px; margin-bottom: 8px; }
+    .page-sub { color: #555; font-size: 11px; letter-spacing: 4px; margin-bottom: 50px; }
+    .systems-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .system-card { background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%); border-radius: 20px; padding: 24px 20px 20px; text-align: center; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.12s, box-shadow 0.12s, background 0.12s; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3); }
+    .system-card:not(.coming-soon):hover { transform: translateY(-4px); box-shadow: 0 10px 0 rgba(0,0,0,0.4), 0 14px 30px rgba(0,0,0,0.4); background: linear-gradient(160deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 100%); }
+    .system-card:not(.coming-soon):active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.3); }
+    .system-card.coming-soon { opacity: 0.5; cursor: default; box-shadow: 0 6px 0 rgba(0,0,0,0.3); }
+    .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 20px 20px 0 0; }
+    .icon-wrap { display: flex; justify-content: center; align-items: center; margin-bottom: 14px; height: 110px; width: 100%; }
+    .icon-wrap img { max-width: 85%; max-height: 100%; object-fit: contain; }
+    .icon-wrap svg { max-width: 85%; max-height: 100%; }
+    .sys-label { font-size: 11px; font-weight: bold; letter-spacing: 3px; }
+    .sys-count { font-size: 9px; color: #555; margin-top: 4px; letter-spacing: 1px; }
+    .sys-coming { font-size: 9px; color: #e8a020; margin-top: 4px; letter-spacing: 2px; }
+    .btn-back { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #ccc; font-size: 13px; letter-spacing: 2px; padding: 14px 26px; cursor: pointer; font-family: inherit; margin-bottom: 30px; border-radius: 50px; transition: background 0.15s, border-color 0.15s, color 0.15s; display: inline-flex; align-items: center; gap: 10px; }
+    .btn-back:hover { background: rgba(255,220,0,0.12); border-color: #ffdc00; color: #ffdc00; }
+    .library-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .library-accent { width: 4px; height: 28px; border-radius: 2px; }
+    .library-title { font-size: clamp(18px,3vw,28px); font-weight: bold; letter-spacing: 3px; }
+    .library-sub { font-size: 10px; color: #555; letter-spacing: 4px; margin-bottom: 30px; margin-left: 16px; }
+    .game-list { display: flex; flex-direction: column; gap: 8px; }
+    .game-row { background: rgba(255,255,255,0.02); border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; animation: slideIn 0.3s ease both; overflow: hidden; }
+    .game-row:hover { background: rgba(255,220,0,0.06); border-color: #ffdc00; }
+    .game-thumb { width: 70px; min-width: 70px; height: 90px; object-fit: cover; display: block; background: #111; }
+    .game-thumb-placeholder { width: 70px; min-width: 70px; height: 90px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .game-info { display: flex; align-items: center; gap: 16px; padding: 0 16px; flex: 1; }
+    .game-num { color: #333; font-size: 11px; min-width: 24px; }
+    .game-name { font-size: 14px; letter-spacing: 1px; }
+    .game-play { color: #444; font-size: 16px; padding-right: 20px; }
+    .playing-box { background: rgba(255,255,255,0.02); border-radius: 4px; padding: 20px; text-align: center; }
+    .playing-now { color: #555; font-size: 10px; letter-spacing: 4px; margin-bottom: 12px; }
+    .playing-title { font-size: clamp(16px,3vw,24px); font-weight: bold; color: #ffdc00; letter-spacing: 2px; margin-bottom: 8px; }
+    .playing-system { font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; }
+    #emulator-container { width: 100%; max-width: 800px; margin: 0 auto; background: #000; border: 1px solid #222; border-radius: 2px; min-height: 400px; position: relative; }
+    .site-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; text-align: center; padding: 10px; font-family: 'Courier New', monospace; font-size: 9px; letter-spacing: 3px; color: #333; background: linear-gradient(transparent, rgba(0,0,0,0.6)); }
+  </style>
+</head>
+<body>
+
+<div id="login" class="screen active">
+  <div class="login-title glow-text">GAME ROOM</div>
+  <div class="login-subtitle">FAMILY EDITION</div>
+  <div class="login-box">
+    <div class="label-top">INSERT COIN TO PLAY</div>
+    <span class="field-label">PASSWORD</span>
+    <input type="password" id="password-input" placeholder="........" />
+    <div class="error-msg" id="login-error"></div>
+    <button type="button" class="btn-primary" id="login-btn">START GAME</button>
+  </div>
+  <div class="login-footer blink">FAMILY GAME ROOM</div>
+</div>
+
+<div id="systems" class="screen">
+  <div class="container fade-in">
+    <div class="page-title">GAME ROOM</div>
+    <div class="page-sub">SELECT YOUR SYSTEM</div>
+    <div class="systems-grid">
+
+      <div class="system-card" style="border:2px solid #e8373c44;" id="card-nes">
+        <div class="top-bar" style="background:#e8373c;"></div>
+        <div class="icon-wrap float">
+          <img src="icons/NES.webp" alt="NES" style="width:100%; transform:scale(1.65); filter:drop-shadow(0 0 6px rgba(232,55,60,0.4));">
+        </div>
+        <div class="sys-label" style="color:#e8373c;">NES</div>
+        <div class="sys-count" id="count-nes"></div>
+      </div>
+
+      <div class="system-card" style="border:2px solid #6a3db844;" id="card-snes">
+        <div class="top-bar" style="background:#6a3db8;"></div>
+        <div class="icon-wrap float" style="animation-delay:0.3s">
+          <img src="icons/SNES.png" alt="SNES" style="filter:drop-shadow(0 0 6px rgba(106,61,184,0.4));">
+        </div>
+        <div class="sys-label" style="color:#6a3db8;">SNES</div>
+        <div class="sys-count" id="count-snes"></div>
+      </div>
+
+      <div class="system-card" style="border:2px solid #1a6fb544;" id="card-genesis">
+        <div class="top-bar" style="background:#1a6fb5;"></div>
+        <div class="icon-wrap float" style="animation-delay:0.6s">
+          <img src="icons/GENESIS_svg.png" alt="Genesis" style="filter:drop-shadow(0 0 6px rgba(26,111,181,0.4)) invert(1);">
+        </div>
+        <div class="sys-label" style="color:#1a6fb5;">GENESIS</div>
+        <div class="sys-count" id="count-genesis"></div>
+      </div>
+
+      <div class="system-card" style="border:2px solid #4a7c5944;" id="card-gameboy">
+        <div class="top-bar" style="background:#4a7c59;"></div>
+        <div class="icon-wrap float" style="animation-delay:0.9s">
+          <svg viewBox="0 0 52 80" width="46" height="72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="44" height="72" rx="8" fill="#c8c8b0" stroke="#999" stroke-width="1.5"/>
+            <rect x="10" y="10" width="32" height="28" rx="3" fill="#7a7a60" stroke="#666" stroke-width="1"/>
+            <rect x="13" y="13" width="26" height="22" rx="1" fill="#8bac0f"/>
+            <rect x="14" y="14" width="8" height="4" rx="1" fill="#9bbc1f" opacity="0.5"/>
+            <text x="26" y="44" text-anchor="middle" font-size="5" fill="#555" font-family="sans-serif">GAME BOY</text>
+            <rect x="12" y="50" width="6" height="16" rx="1" fill="#333"/>
+            <rect x="9" y="56" width="12" height="4" rx="1" fill="#333"/>
+            <circle cx="36" cy="58" r="5" fill="#e8373c"/>
+            <circle cx="28" cy="62" r="5" fill="#e8373c"/>
+            <text x="36" y="60" text-anchor="middle" font-size="5" fill="white" font-family="sans-serif" font-weight="bold">A</text>
+            <text x="28" y="64" text-anchor="middle" font-size="5" fill="white" font-family="sans-serif" font-weight="bold">B</text>
+            <rect x="17" y="70" width="8" height="3" rx="1.5" fill="#888"/>
+            <rect x="27" y="70" width="8" height="3" rx="1.5" fill="#888"/>
+          </svg>
+        </div>
+        <div class="sys-label" style="color:#4a7c59;">GAME BOY</div>
+        <div class="sys-count" id="count-gameboy"></div>
+      </div>
+
+      <div class="system-card" style="border:2px solid #7b3fa044;" id="card-gba">
+        <div class="top-bar" style="background:#7b3fa0;"></div>
+        <div class="icon-wrap float" style="animation-delay:1.2s">
+          <svg viewBox="0 0 90 60" width="80" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="8" width="86" height="46" rx="10" fill="#3a2a6a" stroke="#5a4a8a" stroke-width="1.5"/>
+            <rect x="22" y="14" width="46" height="28" rx="3" fill="#2a1a5a" stroke="#5a4a8a" stroke-width="1"/>
+            <rect x="25" y="17" width="40" height="22" rx="1" fill="#1a3a1a"/>
+            <rect x="7" y="26" width="5" height="14" rx="1" fill="#222"/>
+            <rect x="4" y="31" width="11" height="4" rx="1" fill="#222"/>
+            <circle cx="76" cy="28" r="4.5" fill="#e8373c"/>
+            <circle cx="68" cy="33" r="4.5" fill="#4a4a4a"/>
+            <text x="76" y="30" text-anchor="middle" font-size="5" fill="white" font-family="sans-serif" font-weight="bold">A</text>
+            <text x="68" y="35" text-anchor="middle" font-size="5" fill="white" font-family="sans-serif" font-weight="bold">B</text>
+            <rect x="2" y="6" width="18" height="5" rx="3" fill="#4a3a7a" stroke="#5a4a8a" stroke-width="1"/>
+            <rect x="70" y="6" width="18" height="5" rx="3" fill="#4a3a7a" stroke="#5a4a8a" stroke-width="1"/>
+            <rect x="38" y="42" width="6" height="3" rx="1.5" fill="#5a4a8a"/>
+            <rect x="46" y="42" width="6" height="3" rx="1.5" fill="#5a4a8a"/>
+          </svg>
+        </div>
+        <div class="sys-label" style="color:#7b3fa0;">GBA</div>
+        <div class="sys-count" id="count-gba"></div>
+      </div>
+
+      <div class="system-card coming-soon" style="border:2px solid #55555533;">
+        <div class="top-bar" style="background:#555;"></div>
+        <div class="icon-wrap">
+          <img src="icons/n64.svg" alt="N64" style="filter:invert(1) opacity(0.5);">
+        </div>
+        <div class="sys-label" style="color:#555;">N64</div>
+        <div class="sys-coming">COMING SOON</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="library" class="screen">
+  <div class="container fade-in">
+    <button type="button" class="btn-back" id="back-to-systems">🕹️ ALL SYSTEMS</button>
+    <div class="library-header">
+      <div class="library-accent" id="library-accent"></div>
+      <div class="library-title" id="library-title"></div>
+    </div>
+    <div class="library-sub" id="library-sub"></div>
+    <div class="game-list" id="game-list"></div>
+  </div>
+</div>
+
+<div id="playing" class="screen">
+  <div class="container fade-in">
+    <button type="button" class="btn-back" id="back-to-library">🎮 BACK TO LIBRARY</button>
+    <button type="button" class="btn-back" id="back-to-systems-from-playing" style="margin-left:8px;">🕹️ ALL SYSTEMS</button>
+    <div class="playing-box" id="playing-box">
+      <div class="playing-now">NOW LOADING</div>
+      <div class="playing-title" id="playing-title"></div>
+      <div class="playing-system" id="playing-system"></div>
+      <div id="emulator-container"></div>
+    </div>
+  </div>
+</div>
+
+<div class="site-footer">⬡ GAME ROOM v1.0 &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; LAST UPDATED MAY 2026 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+
+<script>
+var PASSWORD = "family123";
+
+var SYSTEMS = {
+  nes:     { label: "NES",      color: "#e8373c" },
+  snes:    { label: "SNES",     color: "#6a3db8" },
+  genesis: { label: "GENESIS",  color: "#1a6fb5" },
+  gameboy: { label: "GAME BOY", color: "#4a7c59" },
+  gba:     { label: "GBA",      color: "#7b3fa0" }
+};
+
+var EMU_CORES = {
+  nes:     "nes",
+  snes:    "snes",
+  genesis: "segaMD",
+  gameboy: "gb",
+  gba:     "gba"
+};
+
+var GAMES = {
+  nes: [
+    { title: "Battletoads", file: "Battletoads.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Battletoads%20%28USA%29.png" },
+    { title: "Castlevania", file: "Castlevania.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Castlevania%20%28USA%29.png" },
+    { title: "Castlevania 2 - Simons Quest", file: "Castlevania 2 - Simons Quest.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Castlevania%20II%20-%20Simon%27s%20Quest%20%28USA%29.png" },
+    { title: "Castlevania 3 - Draculas Curse", file: "Castlevania 3 - Draculas Curse.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Castlevania%20III%20-%20Dracula%27s%20Curse%20%28USA%29.png" },
+    { title: "Chip n Dale Rescue Rangers", file: "Chip n Dale Rescue Rangers.nes", thumb: "icons/boxart/nes_chip_dale.png" },
+    { title: "Contra", file: "Contra.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Contra%20%28USA%29.png" },
+    { title: "Donkey Kong Classics", file: "Donkey Kong Classics.nes", thumb: "icons/boxart/nes_donkey_kong_classics.png" },
+    { title: "Double Dragon", file: "Double Dragon.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Double%20Dragon%20%28USA%29.png" },
+    { title: "Double Dragon 2 - The Revenge", file: "Double Dragon 2 - The Revenge.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Double%20Dragon%20II%20-%20The%20Revenge%20%28USA%29.png" },
+    { title: "Double Dragon 3 - The Sacred Stones", file: "Double Dragon 3 - The Sacred Stones.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Double%20Dragon%20III%20-%20The%20Sacred%20Stones%20%28USA%29.png" },
+    { title: "Duck Tales", file: "Duck Tales.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/DuckTales%20%28USA%29.png" },
+    { title: "Karate Champ", file: "Karate Champ.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Karate%20Champ%20%28USA%29.png" },
+    { title: "Karate Kid", file: "Karate Kid.nes", thumb: "icons/boxart/nes_karate_kid.png" },
+    { title: "Legend of Zelda", file: "Legend of Zelda.nes", thumb: "icons/boxart/nes_zelda_gold.png" },
+    { title: "Mega Man", file: "Mega Man.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%20%28USA%29.png" },
+    { title: "Mega Man 2", file: "Mega Man 2.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%202%20%28USA%29.png" },
+    { title: "Mega Man 3", file: "Mega Man 3.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%203%20%28USA%29.png" },
+    { title: "Mega Man 4", file: "Mega Man 4.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%204%20%28USA%29.png" },
+    { title: "Mega Man 5", file: "Mega Man 5.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%205%20%28USA%29.png" },
+    { title: "Mega Man 6", file: "Mega Man 6.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%206%20%28USA%29.png" },
+    { title: "Mike Tysons Punch-Out!!", file: "Mike Tysons Punch-Out!!.nes", thumb: "icons/boxart/nes_punchout.png" },
+    { title: "Ms Pac-Man", file: "Ms Pac-Man.nes", thumb: "icons/boxart/nes_ms_pacman.png" },
+    { title: "Ninja Gaiden", file: "Ninja Gaiden.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Ninja%20Gaiden%20%28USA%29.png" },
+    { title: "Pac-Man", file: "Pac-Man.nes", thumb: "icons/boxart/nes_pacman.png" },
+    { title: "Pacmania", file: "Pacmania.nes", thumb: "icons/boxart/nes_pacmania.png" },
+    { title: "Q-bert", file: "Q-bert.nes", thumb: "icons/boxart/nes_qbert.png" },
+    { title: "Spy Hunter", file: "Spy Hunter.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Spy%20Hunter%20%28USA%29.png" },
+    { title: "Super Mario Bros", file: "Super Mario Bros.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20Bros.%20%28World%29.png" },
+    { title: "Super Mario Bros 2", file: "Super Mario Bros 2.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20Bros.%202%20%28USA%29.png" },
+    { title: "Super Mario Bros 3", file: "Super Mario Bros 3.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20Bros.%203%20%28USA%29.png" },
+    { title: "Teenage Mutant Ninja Turtles", file: "Teenage Mutant Ninja Turtles.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Teenage%20Mutant%20Ninja%20Turtles%20%28USA%29.png" },
+    { title: "Zelda 2 - The Adventure of Link", file: "Zelda 2 - The Adventure of Link.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Zelda%20II%20-%20The%20Adventure%20of%20Link%20%28USA%29.png" }
+  ],
+  snes: [
+    { title: "Donkey Kong Country", file: "Donkey Kong Country.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Donkey%20Kong%20Country%20%28USA%29.png" },
+    { title: "Mega Man X", file: "Mega Man X.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Mega%20Man%20X%20%28USA%29.png" },
+    { title: "Mortal Kombat 1", file: "Mortal Kombat 1.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Mortal%20Kombat%20%28USA%29.png" },
+    { title: "Mortal Kombat 2", file: "Mortal Kombat 2.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Mortal%20Kombat%20II%20%28USA%29.png" },
+    { title: "Ms. Pac-Man", file: "Ms. Pac-Man.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Ms.%20Pac-Man%20%28USA%29.png" },
+    { title: "Ninja Gaiden Trilogy", file: "Ninja Gaiden Trilogy.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Ninja%20Gaiden%20Trilogy%20%28USA%29.png" },
+    { title: "Pac-Attack", file: "Pac-Attack.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Pac-Attack%20%28USA%29.png" },
+    { title: "Pac-in-Time", file: "Pac-in-Time.zip", thumb: "icons/boxart/snes_pac_in_time.png" },
+    { title: "Pac-Man 2 - The New Adventures", file: "Pac-Man 2 - The New Adventures.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Pac-Man%202%20-%20The%20New%20Adventures%20%28USA%29.png" },
+    { title: "Street Fighter Alpha 2", file: "Street Fighter Alpha 2.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Street%20Fighter%20Alpha%202%20%28USA%29.png" },
+    { title: "Super Castlevania IV", file: "Super Castlevania IV.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Castlevania%20IV%20%28USA%29.png" },
+    { title: "Super Double Dragon", file: "Super Double Dragon.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Double%20Dragon%20%28USA%29.png" },
+    { title: "Super Ghouls n Ghosts", file: "Super Ghouls n Ghosts.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Ghouls%20%27N%20Ghosts%20%28USA%29.png" },
+    { title: "Super Mario All-Stars", file: "Super Mario All-Stars.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20All-Stars%20%28USA%29.png" },
+    { title: "Super Mario World", file: "Super Mario World.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20World%20%28USA%29.png" },
+    { title: "Super Mario World 2 - Yoshs Island", file: "Super Mario World 2 - Yoshs Island.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Mario%20World%202%20-%20Yoshi%27s%20Island%20%28USA%29.png" },
+    { title: "Super Metroid", file: "Super Metroid.zip", thumb: "icons/boxart/snes_super_metroid.png" },
+    { title: "Super Punch-Out!!", file: "Super Punch-Out!!.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Super%20Punch-Out%21%21%20%28USA%29.png" },
+    { title: "Teenage Mutant Ninja Turtles IV - Turtles in Time", file: "Teenage Mutant Ninja Turtles IV - Turtles in Time.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/Teenage%20Mutant%20Ninja%20Turtles%20IV%20-%20Turtles%20in%20Time%20%28USA%29.png" },
+    { title: "The Legend of Zelda - A Link to the Past", file: "The Legend of Zelda - A Link to the Past.zip", thumb: "icons/boxart/gen_sonic1.png" }
+  ],
+  genesis: [
+    { title: "Sonic The Hedgehog", file: "Sonic The Hedgehog.zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/Sonic%20the%20Hedgehog%20%28USA%2C%20Europe%29.png" },
+    { title: "Sonic The Hedgehog 2", file: "Sonic The Hedgehog 2.zip", thumb: "icons/boxart/gen_sonic2.png" },
+    { title: "Sonic The Hedgehog 3", file: "Sonic The Hedgehog 3.zip", thumb: "icons/boxart/gen_sonic3.png" },
+    { title: "Streets of Rage 2", file: "Streets of Rage 2.zip", thumb: "icons/boxart/gen_sor2.png" },
+    { title: "Streets of Rage 3", file: "Streets of Rage 3.zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/Streets%20of%20Rage%203%20%28USA%29.png" }
+  ],
+  gameboy: [
+    { title: "Dr. Mario", file: "Dr. Mario.gb", thumb: "icons/boxart/gb_dr_mario.png" },
+    { title: "Duck Tales", file: "Duck Tales.gb", thumb: "icons/boxart/gb_ducktales.png" },
+    { title: "Legend of Zelda - Links Awakening", file: "Legend of Zelda - Links Awakening.gb", thumb: "icons/boxart/gb_zelda_awakening.png" },
+    { title: "Mega Man - Dr. Wilys Revenge", file: "Mega Man - Dr. Wilys Revenge.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20-%20Dr.%20Wily%27s%20Revenge%20%28USA%29.png" },
+    { title: "Mega Man II", file: "Mega Man II.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20II%20%28USA%29.png" }
+  ],
+  gba: [
+    { title: "Legend of Zelda - A Link to the Past & Four Swords", file: "Legend of Zelda - A Link to the Past & Four Swords.zip", thumb: "icons/boxart/gba_zelda_4swords.png" },
+    { title: "Legend of Zelda - The Minish Cap", file: "Legend of Zelda - The Minish Cap.zip", thumb: "icons/boxart/gba_zelda_minish.png" },
+    { title: "LEGO Star Wars - The Video Game", file: "LEGO Star Wars - The Video Game.zip", thumb: "icons/boxart/gba_lego_sw.png" },
+    { title: "LEGO Star Wars II - The Original Trilogy", file: "LEGO Star Wars II - The Original Trilogy.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Advance/Named_Boxarts/LEGO%20Star%20Wars%20II%20-%20The%20Original%20Trilogy%20%28USA%29.png" },
+    { title: "Mario Kart - Super Circuit", file: "Mario Kart - Super Circuit.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Advance/Named_Boxarts/Mario%20Kart%20-%20Super%20Circuit%20%28USA%29.png" },
+    { title: "Pac-Man Collection", file: "Pac-Man Collection.zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Advance/Named_Boxarts/Pac-Man%20Collection%20%28USA%29.png" },
+    { title: "Super Puzzle Fighter II Turbo", file: "Super Puzzle Fighter II Turbo.zip", thumb: "icons/boxart/gba_puzzle_fighter.png" }
+  ]
+};
+
+var currentSystem = null;
+
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) {
+    screens[i].classList.remove('active');
+  }
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function handleLogin() {
+  var input = document.getElementById('password-input');
+  var err = document.getElementById('login-error');
+  if (input.value === PASSWORD) {
+    err.textContent = '';
+    sessionStorage.setItem('loggedIn', 'yes');
+    showScreen('systems');
+  } else {
+    err.textContent = 'Wrong password. Try again!';
+    input.value = '';
+  }
+}
+
+if (sessionStorage.getItem('loggedIn') === 'yes') {
+  var params = new URLSearchParams(window.location.search);
+  var sys = params.get('system');
+  if (sys && GAMES[sys]) {
+    openSystem(sys);
+  } else {
+    showScreen('systems');
+  }
+}
+
+function openSystem(sysId) {
+  currentSystem = sysId;
+  var sys = SYSTEMS[sysId];
+  var games = GAMES[sysId].slice().sort(function(a, b) {
+    return a.title.localeCompare(b.title);
+  });
+  document.getElementById('library-accent').style.background = sys.color;
+  document.getElementById('library-title').textContent = sys.label;
+  document.getElementById('library-title').style.color = sys.color;
+  document.getElementById('library-sub').textContent = games.length + ' GAMES - ALPHABETICAL';
+  var list = document.getElementById('game-list');
+  list.innerHTML = '';
+  for (var i = 0; i < games.length; i++) {
+    var game = games[i];
+    var row = document.createElement('div');
+    row.className = 'game-row';
+    row.style.animationDelay = (i * 0.02) + 's';
+    row.innerHTML =
+      '<img class="game-thumb" src="' + game.thumb + '" alt="' + game.title + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' +
+      '<div class="game-thumb-placeholder" style="display:none">🎮</div>' +
+      '<div class="game-info">' +
+        '<span class="game-num">' + String(i + 1).padStart(2, '0') + '</span>' +
+        '<span class="game-name">' + game.title + '</span>' +
+      '</div>' +
+      '<span class="game-play">&#9654;</span>';
+    (function(g) { row.onclick = function() { openGame(g); }; })(game);
+    list.appendChild(row);
+  }
+  showScreen('library');
+}
+
+function openGame(game) {
+  var sys = SYSTEMS[currentSystem];
+  document.getElementById('playing-title').textContent = game.title;
+  document.getElementById('playing-system').textContent = sys.label;
+  document.getElementById('playing-system').style.color = sys.color;
+  document.getElementById('playing-box').style.borderColor = sys.color;
+
+  var container = document.getElementById('emulator-container');
+  container.innerHTML = '';
+
+  var oldScripts = document.querySelectorAll('script[src*="emulatorjs.org"]');
+  for (var i = 0; i < oldScripts.length; i++) { oldScripts[i].remove(); }
+
+  window.EJS_STORAGE = undefined;
+  window.EJS_emulator = undefined;
+  window.EJS_player    = '#emulator-container';
+  window.EJS_gameName  = game.title;
+  window.EJS_core      = EMU_CORES[currentSystem];
+  window.EJS_gameUrl   = 'roms/' + currentSystem + '/' + game.file;
+  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  window.EJS_startOnLoaded = true;
+
+  var script = document.createElement('script');
+  script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+  document.body.appendChild(script);
+
+  showScreen('playing');
+}
+
+function goBack(screen) {
+  if (screen === 'library') {
+    location.href = location.pathname + '?system=' + currentSystem;
+  } else {
+    showScreen(screen);
+  }
+}
+
+document.getElementById('login-btn').onclick = handleLogin;
+document.getElementById('password-input').onkeydown = function(e) {
+  if (e.key === 'Enter') handleLogin();
+};
+document.getElementById('back-to-systems').onclick = function() { showScreen('systems'); };
+document.getElementById('back-to-library').onclick = function() { goBack('library'); };
+document.getElementById('back-to-systems-from-playing').onclick = function() { location.href = location.pathname; };
+document.getElementById('card-nes').onclick     = function() { openSystem('nes'); };
+document.getElementById('card-snes').onclick    = function() { openSystem('snes'); };
+document.getElementById('card-genesis').onclick = function() { openSystem('genesis'); };
+document.getElementById('card-gameboy').onclick = function() { openSystem('gameboy'); };
+document.getElementById('card-gba').onclick     = function() { openSystem('gba'); };
+
+var sysList = Object.keys(GAMES);
+for (var s = 0; s < sysList.length; s++) {
+  var el = document.getElementById('count-' + sysList[s]);
+  if (el) el.textContent = GAMES[sysList[s]].length + ' GAMES';
+}
+</script>
+</body>
+</html>
