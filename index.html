@@ -68,6 +68,19 @@
     .playing-system { font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; }
     #emulator-container { width: 100%; max-width: 800px; margin: 0 auto; background: #000; border: 1px solid #222; border-radius: 2px; min-height: 400px; position: relative; }
     .site-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; text-align: center; padding: 12px; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 3px; color: #666; background: linear-gradient(transparent, rgba(0,0,0,0.85)); }
+.play-online-btn { position: fixed; top: 20px; right: 20px; z-index: 600; background: linear-gradient(135deg, #1a8a3a, #0f5a25); border: 2px solid #2aaa4a; color: #fff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 12px 24px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 20px rgba(42,170,74,0.3); transition: transform 0.12s, box-shadow 0.12s; }
+.play-online-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 25px rgba(42,170,74,0.4); }
+.play-online-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
+.online-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
+.online-modal.active { display: flex; }
+.online-modal-box { background: #0f0f18; border: 2px solid #2aaa4a; border-radius: 16px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
+.online-modal-title { font-size: 20px; font-weight: bold; color: #2aaa4a; letter-spacing: 3px; margin-bottom: 8px; }
+.online-modal-sub { font-size: 10px; color: #555; letter-spacing: 3px; margin-bottom: 30px; }
+.online-step { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; text-align: left; font-size: 12px; color: #aaa; letter-spacing: 1px; line-height: 1.6; }
+.online-step span { color: #2aaa4a; font-weight: bold; }
+.online-link { color: #ffdc00; text-decoration: none; }
+.online-close { margin-top: 24px; background: transparent; border: 1px solid #333; color: #888; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; padding: 10px 24px; border-radius: 50px; cursor: pointer; }
+.online-close:hover { border-color: #666; color: #ccc; }
   </style>
 </head>
 <body>
@@ -199,6 +212,20 @@
       <div class="playing-system" id="playing-system"></div>
       <div id="emulator-container"></div>
     </div>
+  </div>
+</div>
+
+<button class="play-online-btn" id="play-online-btn">🌐 PLAY ONLINE</button>
+
+<div class="online-modal" id="online-modal">
+  <div class="online-modal-box">
+    <div class="online-modal-title">PLAY ONLINE</div>
+    <div class="online-modal-sub">POWERED BY PARSEC</div>
+    <div class="online-step"><span>STEP 1</span> — Both players download Parsec for free at <a class="online-link" href="https://parsec.app" target="_blank">parsec.app</a></div>
+    <div class="online-step"><span>STEP 2</span> — Host opens a game here in Game Room and launches Parsec</div>
+    <div class="online-step"><span>STEP 3</span> — In Parsec, host clicks <strong style="color:#fff">Share</strong> and sends the link to the other player</div>
+    <div class="online-step"><span>STEP 4</span> — Other player clicks the link and joins — both players can now control the game!</div>
+    <button class="online-close" id="online-close">CLOSE</button>
   </div>
 </div>
 
@@ -435,6 +462,8 @@ document.getElementById('back-to-systems').onclick = function() { showScreen('sy
 document.getElementById('back-to-library').onclick = function() { goBack('library'); };
 document.getElementById('back-to-systems-from-playing').onclick = function() { location.href = location.pathname; };
 document.getElementById('card-n64').onclick     = function() { openSystem('n64'); };
+document.getElementById('play-online-btn').onclick = function() { document.getElementById('online-modal').classList.add('active'); };
+document.getElementById('online-close').onclick = function() { document.getElementById('online-modal').classList.remove('active'); };
 document.getElementById('card-nes').onclick     = function() { openSystem('nes'); };
 document.getElementById('card-snes').onclick    = function() { openSystem('snes'); };
 document.getElementById('card-genesis').onclick = function() { openSystem('genesis'); };
