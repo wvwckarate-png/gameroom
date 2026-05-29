@@ -297,7 +297,7 @@ var EMU_CORES = {
   gba:     "gba",
   n64:     "n64",
   gbc:     "gambatte",
-  mame:    "mame"
+  mame:    "mame2003_plus"
 };
 
 var GAMES = {
@@ -547,7 +547,12 @@ function openGame(game) {
   window.EJS_player    = '#emulator-container';
   window.EJS_gameName  = game.title;
   window.EJS_core      = EMU_CORES[currentSystem];
-  window.EJS_gameUrl   = 'roms/' + currentSystem + '/' + game.file;
+  var romFolders = { mame: 'mame' };
+  var folder = romFolders[currentSystem] || currentSystem;
+  window.EJS_gameUrl   = 'roms/' + folder + '/' + game.file;
+  if (currentSystem === 'mame') {
+    window.EJS_gameParentUrl = 'roms/' + folder + '/';
+  }
   window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   window.EJS_startOnLoaded = true;
 
