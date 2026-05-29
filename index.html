@@ -172,13 +172,13 @@
         <div class="sys-count" id="count-gbc"></div>
       </div>
 
-      <div class="system-card coming-soon" style="border:2px solid #55555533;">
-        <div class="top-bar" style="background:#555;"></div>
-        <div class="icon-wrap">
-          <img src="icons/MAME.png" alt="MAME" style="opacity:0.5;">
+      <div class="system-card" style="border:2px solid #ff660044;" id="card-mame">
+        <div class="top-bar" style="background:#ff6600;"></div>
+        <div class="icon-wrap float" style="animation-delay:1.5s">
+          <img src="icons/MAME.png" alt="MAME" style="filter:drop-shadow(0 0 6px rgba(255,102,0,0.5));">
         </div>
-        <div class="sys-label" style="color:#555;">MAME ARCADE</div>
-        <div class="sys-coming">COMING SOON</div>
+        <div class="sys-label" style="color:#ff6600;">MAME ARCADE</div>
+        <div class="sys-count" id="count-mame"></div>
       </div>
 
       <div class="system-card coming-soon" style="border:2px solid #55555533;">
@@ -285,7 +285,8 @@ var SYSTEMS = {
   gameboy: { label: "GAME BOY", color: "#4a7c59" },
   gba:     { label: "GBA",      color: "#7b3fa0" },
   n64:     { label: "N64",      color: "#c0a020" },
-  gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" }
+  gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" },
+  mame:    { label: "MAME ARCADE", color: "#ff6600" }
 };
 
 var EMU_CORES = {
@@ -295,7 +296,8 @@ var EMU_CORES = {
   gameboy: "gb",
   gba:     "gba",
   n64:     "n64",
-  gbc:     "gambatte"
+  gbc:     "gambatte",
+  mame:    "mame2003"
 };
 
 var GAMES = {
@@ -413,6 +415,43 @@ var GAMES = {
     { title: "Legend of Zelda - Links Awakening", file: "Legend of Zelda - Links Awakening.gb", thumb: "icons/boxart/gb_zelda_awakening.png" },
     { title: "Mega Man - Dr. Wilys Revenge", file: "Mega Man - Dr. Wilys Revenge.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20-%20Dr.%20Wily%27s%20Revenge%20%28USA%29.png" },
     { title: "Mega Man II", file: "Mega Man II.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20II%20%28USA%29.png" }
+  ],
+  mame: [
+    { title: "1942", file: "1942.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/1942%20(1984)(Capcom).png" },
+    { title: "Asteroids", file: "asteroid.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Asteroids%20(1980)(Atari).png" },
+    { title: "Burger Time", file: "btime.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Burger%20Time%20(1982)(Data%20East).png" },
+    { title: "Centipede", file: "centiped.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Centipede%20(1980)(Atari).png" },
+    { title: "Defender", file: "defender.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Defender%20(1980)(Williams).png" },
+    { title: "Dig Dug", file: "digdug.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Dig%20Dug%20(1982)(Namco).png" },
+    { title: "Donkey Kong", file: "dkong.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Donkey%20Kong%20(1981)(Nintendo).png" },
+    { title: "Donkey Kong Jr.", file: "dkongjr.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Donkey%20Kong%20Jr.%20(1982)(Nintendo).png" },
+    { title: "Double Dragon", file: "ddragon.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Double%20Dragon%20(1987)(Technos).png" },
+    { title: "Double Dragon 2", file: "ddragon2.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Double%20Dragon%20II%20(1988)(Technos).png" },
+    { title: "Double Dragon 3", file: "ddragon3.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Double%20Dragon%203%20(1990)(Technos).png" },
+    { title: "Frogger", file: "frogger.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Frogger%20(1981)(Konami).png" },
+    { title: "Galaga", file: "galaga.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Galaga%20(1981)(Namco).png" },
+    { title: "Ghosts n Goblins", file: "gng.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Ghosts%20n%20Goblins%20(1985)(Capcom).png" },
+    { title: "Joust", file: "joust.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Joust%20(1982)(Williams).png" },
+    { title: "Kung-Fu Master", file: "kungfum.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Kung-Fu%20Master%20(1984)(Irem).png" },
+    { title: "Missile Command", file: "missile.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Missile%20Command%20(1980)(Atari).png" },
+    { title: "Mortal Kombat", file: "mk.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Mortal%20Kombat%20(1992)(Midway).png" },
+    { title: "Mortal Kombat 2", file: "mk2.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Mortal%20Kombat%20II%20(1993)(Midway).png" },
+    { title: "Ms. Pac-Man", file: "mspacman.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Ms.%20Pac-Man%20(1981)(Midway).png" },
+    { title: "Pac-Man", file: "pacman.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Pac-Man%20(1980)(Namco).png" },
+    { title: "Pac-Mania", file: "pacmania.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Pac-Mania%20(1987)(Namco).png" },
+    { title: "Q*bert", file: "qbert.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Q%2Abert%20(1982)(Gottlieb).png" },
+    { title: "Robotron 2084", file: "robotron.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Robotron%202084%20(1982)(Williams).png" },
+    { title: "Street Fighter", file: "sf1.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Street%20Fighter%20(1987)(Capcom).png" },
+    { title: "Street Fighter 2", file: "sf2.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Street%20Fighter%20II%20(1991)(Capcom).png" },
+    { title: "The Simpsons", file: "simpsons.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/The%20Simpsons%20(1991)(Konami).png" },
+    { title: "Superman", file: "superman.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Superman%20(1988)(Taito).png" },
+    { title: "TMNT", file: "tmnt.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Teenage%20Mutant%20Ninja%20Turtles%20(1989)(Konami).png" },
+    { title: "Tron", file: "tron.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Tron%20(1982)(Midway).png" },
+    { title: "X-Men", file: "xmen.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/X-Men%20(1992)(Konami).png" },
+    { title: "Zaxxon", file: "zaxxon.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Zaxxon%20(1982)(Sega).png" },
+    { title: "Space Invaders", file: "invaders.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Space%20Invaders%20(1978)(Taito).png" },
+    { title: "Super Pac-Man", file: "superpac.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Super%20Pac-Man%20(1982)(Namco).png" },
+    { title: "Super Pac-Man (alt)", file: "superpcm.zip", thumb: "https://thumbnails.libretro.com/MAME/Named_Boxarts/Super%20Pac-Man%20(1982)(Namco).png" }
   ],
   gba: [
     { title: "Legend of Zelda - A Link to the Past & Four Swords", file: "Legend of Zelda - A Link to the Past & Four Swords.zip", thumb: "icons/boxart/gba_zelda_4swords.png" },
@@ -592,6 +631,7 @@ document.getElementById('card-snes').onclick    = function() { openSystem('snes'
 document.getElementById('card-genesis').onclick = function() { openSystem('genesis'); };
 document.getElementById('card-gameboy').onclick = function() { openSystem('gameboy'); };
 document.getElementById('card-gba').onclick     = function() { openSystem('gba'); };
+document.getElementById('card-mame').onclick    = function() { openSystem('mame'); };
 
 var sysList = Object.keys(GAMES);
 for (var s = 0; s < sysList.length; s++) {
