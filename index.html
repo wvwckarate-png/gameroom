@@ -172,6 +172,15 @@
         <div class="sys-count" id="count-gbc"></div>
       </div>
 
+      <div class="system-card" style="border:2px solid #1a9be844;" id="card-gamegear">
+        <div class="top-bar" style="background:#1a9be8;"></div>
+        <div class="icon-wrap float" style="animation-delay:1.8s">
+          <img src="icons/GAMEBOY.png" alt="Game Gear" style="filter:drop-shadow(0 0 6px rgba(26,155,232,0.6)) hue-rotate(180deg);">
+        </div>
+        <div class="sys-label" style="color:#1a9be8;">GAME GEAR</div>
+        <div class="sys-count" id="count-gamegear"></div>
+      </div>
+
       <div class="system-card" style="border:2px solid #ff660044;" id="card-mame">
         <div class="top-bar" style="background:#ff6600;"></div>
         <div class="icon-wrap float" style="animation-delay:1.5s">
@@ -286,7 +295,8 @@ var SYSTEMS = {
   gba:     { label: "GBA",      color: "#7b3fa0" },
   n64:     { label: "N64",      color: "#c0a020" },
   gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" },
-  mame:    { label: "MAME ARCADE", color: "#ff6600" }
+  mame:    { label: "MAME ARCADE", color: "#ff6600" },
+  gamegear: { label: "GAME GEAR", color: "#1a9be8" }
 };
 
 var EMU_CORES = {
@@ -297,7 +307,8 @@ var EMU_CORES = {
   gba:     "gba",
   n64:     "n64",
   gbc:     "gambatte",
-  mame:    "mame2003_plus"
+  mame:    "mame2003_plus",
+  gamegear: "gamegear"
 };
 
 var GAMES = {
@@ -416,7 +427,31 @@ var GAMES = {
     { title: "Mega Man - Dr. Wilys Revenge", file: "Mega Man - Dr. Wilys Revenge.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20-%20Dr.%20Wily%27s%20Revenge%20%28USA%29.png" },
     { title: "Mega Man II", file: "Mega Man II.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20II%20%28USA%29.png" }
   ],
-mame: [
+gamegear: [
+    { title: "Arena", file: "Arena (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Arena%20%28USA%2C%20Europe%29.png" },
+    { title: "Ax Battler - A Legend of Golden Axe", file: "Ax Battler - A Legend of..., Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Ax%20Battler%20-%20A%20Legend%20of%20Golden%20Axe%20%28USA%2C%20Europe%2C%20Brazil%29.png" },
+    { title: "Baku Baku", file: "Baku Baku (USA).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Baku%20Baku%20%28USA%29.png" },
+    { title: "Crystal Warriors", file: "Crystal Warriors (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Crystal%20Warriors%20%28USA%2C%20Europe%29.png" },
+    { title: "Defenders of Oasis", file: "Defenders of Oasis (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Defenders%20of%20Oasis%20%28USA%2C%20Europe%29.png" },
+    { title: "Factory Panic", file: "Factory Panic (Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Factory%20Panic%20%28Europe%2C%20Brazil%29.png" },
+    { title: "Legend of Illusion Starring Mickey Mouse", file: "Legend of Illusion Starri...ouse (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Legend%20of%20Illusion%20Starring%20Mickey%20Mouse%20%28USA%2C%20Europe%29.png" },
+    { title: "Magical Puzzle Popils", file: "Magical Puzzle Popils (World) (En,Ja).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Magical%20Puzzle%20Popils%20%28World%29.png" },
+    { title: "Mega Man", file: "Mega Man (USA).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Mega%20Man%20%28USA%29.png" },
+    { title: "Mighty Morphin Power Rangers", file: "Mighty Morphin Power Rangers (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Mighty%20Morphin%20Power%20Rangers%20%28USA%2C%20Europe%29.png" },
+    { title: "Ninja Gaiden", file: "Ninja Gaiden (USA, Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Ninja%20Gaiden%20%28USA%2C%20Europe%2C%20Brazil%29.png" },
+    { title: "Ristar", file: "Ristar (World).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Ristar%20%28World%29.png" },
+    { title: "Shining Force - The Sword of Hajya", file: "Shining Force - The Sword of Hajya (USA).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Shining%20Force%20-%20The%20Sword%20of%20Hajya%20%28USA%29.png" },
+    { title: "Shinobi", file: "Shinobi (World) (Rev A).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Shinobi%20%28World%29.png" },
+    { title: "Shinobi II - The Silent Fury", file: "Shinobi II - The Silent Fury (World).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Shinobi%20II%20-%20The%20Silent%20Fury%20%28World%29.png" },
+    { title: "Sonic Chaos", file: "Sonic Chaos (USA, Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Sonic%20Chaos%20%28USA%2C%20Europe%2C%20Brazil%29.png" },
+    { title: "Sonic Drift 2", file: "Sonic Drift 2 (World).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Sonic%20Drift%202%20%28World%29.png" },
+    { title: "Sonic The Hedgehog", file: "Sonic The Hedgehog -...A, Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Sonic%20The%20Hedgehog%20%28Japan%2C%20Europe%2C%20Brazil%29.png" },
+    { title: "Sonic The Hedgehog 2", file: "Sonic The Hedgehog 2 (World).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Sonic%20The%20Hedgehog%202%20%28World%29.png" },
+    { title: "Streets of Rage 2", file: "Streets of Rage 2 (World).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Streets%20of%20Rage%202%20%28World%29.png" },
+    { title: "Super Columns", file: "Super Columns (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Super%20Columns%20%28USA%2C%20Europe%29.png" },
+    { title: "Tails Adventure", file: "Tails Adventure (World) (En,Ja).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Tails%20Adventure%20%28World%29.png" }
+  ],
+  mame: [
     { title: "1942", file: "1942.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/9/9e/1942_arcadeflyer.png" },
     { title: "1943", file: "1943.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/3/3e/1943_arcadeflyer.png" },
     { title: "Asteroids", file: "asteroid.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/a/a1/Asteroids_arcade_game_logo.png" },
@@ -557,7 +592,7 @@ function openGame(game) {
   window.EJS_player    = '#emulator-container';
   window.EJS_gameName  = game.title;
   window.EJS_core      = EMU_CORES[currentSystem];
-  var romFolders = { mame: 'mame' };
+  var romFolders = { mame: 'mame', gamegear: 'gamegear' };
   var folder = romFolders[currentSystem] || currentSystem;
   window.EJS_gameUrl   = 'roms/' + folder + '/' + game.file;
   if (currentSystem === 'mame') {
@@ -647,6 +682,7 @@ document.getElementById('card-genesis').onclick = function() { openSystem('genes
 document.getElementById('card-gameboy').onclick = function() { openSystem('gameboy'); };
 document.getElementById('card-gba').onclick     = function() { openSystem('gba'); };
 document.getElementById('card-mame').onclick    = function() { openSystem('mame'); };
+document.getElementById('card-gamegear').onclick = function() { openSystem('gamegear'); };
 
 var sysList = Object.keys(GAMES);
 for (var s = 0; s < sysList.length; s++) {
