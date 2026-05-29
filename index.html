@@ -163,13 +163,13 @@
         <div class="sys-count" id="count-gba"></div>
       </div>
 
-      <div class="system-card coming-soon" style="border:2px solid #55555533;">
-        <div class="top-bar" style="background:#555;"></div>
-        <div class="icon-wrap">
-          <img src="icons/GBC.png" alt="GBC" style="opacity:0.5;">
+      <div class="system-card" style="border:2px solid #2a7a2a44;" id="card-gbc">
+        <div class="top-bar" style="background:#2a7a2a;"></div>
+        <div class="icon-wrap float">
+          <img src="icons/GBC.png" alt="GBC" style="filter:drop-shadow(0 0 6px rgba(42,122,42,0.6));">
         </div>
-        <div class="sys-label" style="color:#555;">GAME BOY COLOR</div>
-        <div class="sys-coming">COMING SOON</div>
+        <div class="sys-label" style="color:#2a7a2a;">GAME BOY COLOR</div>
+        <div class="sys-count" id="count-gbc"></div>
       </div>
 
       <div class="system-card coming-soon" style="border:2px solid #55555533;">
@@ -284,7 +284,8 @@ var SYSTEMS = {
   genesis: { label: "GENESIS",  color: "#1a6fb5" },
   gameboy: { label: "GAME BOY", color: "#4a7c59" },
   gba:     { label: "GBA",      color: "#7b3fa0" },
-  n64:     { label: "N64",      color: "#c0a020" }
+  n64:     { label: "N64",      color: "#c0a020" },
+  gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" }
 };
 
 var EMU_CORES = {
@@ -293,10 +294,38 @@ var EMU_CORES = {
   genesis: "segaMD",
   gameboy: "gb",
   gba:     "gba",
-  n64:     "n64"
+  n64:     "n64",
+  gbc:     "gbc"
 };
 
 var GAMES = {
+  gbc: [
+    { title: "Deer Hunter", file: "Deer Hunter (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Deer%20Hunter%20%28USA%29.png" },
+    { title: "Dragon Warrior I & II", file: "Dragon Warrior I & II (USA) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20I%20%26%20II%20%28USA%29.png" },
+    { title: "Dragon Warrior III", file: "Dragon Warrior III (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20Monsters%20%28USA%2C%20Europe%29.png" },
+    { title: "Dragon Warrior Monsters", file: "Dragon Warrior Monsters (USA, Europe) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20Monsters%20%28USA%2C%20Europe%29.png" },
+    { title: "Dragon Warrior Monsters 2 - Cobis Journey", file: "Dragon Warrior Monsters 2 - Cobi's Journey (USA) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20Monsters%202%20-%20Cobi%27s%20Journey%20%28USA%29.png" },
+    { title: "Dragon Warrior Monsters 2 - Taras Adventure", file: "Dragon Warrior Monsters 2 - Tara's Adventure (USA) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20Monsters%202%20-%20Tara%27s%20Adventure%20%28USA%29.png" },
+    { title: "Legend of Zelda - Links Awakening DX", file: "Legend of Zelda, The - Link's Awakening DX (USA, Europe) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Link%27s%20Awakening%20DX%20%28USA%2C%20Europe%29.png" },
+    { title: "Legend of Zelda - Oracle of Ages", file: "Legend of Zelda, The - Oracle of Ages (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Oracle%20of%20Ages%20%28USA%29.png" },
+    { title: "Legend of Zelda - Oracle of Seasons", file: "Legend of Zelda, The - Oracle of Seasons (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Oracle%20of%20Seasons%20%28USA%29.png" },
+    { title: "Mario Golf", file: "Mario Golf (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mario%20Golf%20%28USA%29.png" },
+    { title: "Mario Tennis", file: "Mario Tennis (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mario%20Tennis%20%28USA%29.png" },
+    { title: "Metal Gear Solid", file: "Metal Gear Solid (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Metal%20Gear%20Solid%20%28USA%29.png" },
+    { title: "Pac-Man Special Color Edition", file: "Pac-Man - Special Color Edition (USA) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Pac-Man%20-%20Special%20Color%20Edition%20%28USA%29.png" },
+    { title: "Paperboy", file: "Paperboy (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Paperboy%20%28USA%2C%20Europe%29.png" },
+    { title: "Pokemon Crystal", file: "Pokemon - Crystal Version (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Pokemon%20-%20Crystal%20Version%20%28USA%2C%20Europe%29.png" },
+    { title: "Pokemon Gold", file: "Pokemon - Gold Version (USA, Europe) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Pokemon%20-%20Gold%20Version%20%28USA%2C%20Europe%29.png" },
+    { title: "Pokemon Silver", file: "Pokemon - Silver Version (USA, Europe) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Pokemon%20-%20Silver%20Version%20%28USA%2C%20Europe%29.png" },
+    { title: "Pokemon Pinball", file: "Pokemon Pinball (USA) (Rumble Version) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Pokemon%20Pinball%20%28USA%29.png" },
+    { title: "Rayman", file: "Rayman (USA) (En,Fr,De,Es,It,Nl).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Rayman%20%28USA%29.png" },
+    { title: "Rayman 2 - The Great Escape", file: "Rayman 2 - The Great Escape (USA) (En,Fr,De,Es,It).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Rayman%202%20-%20The%20Great%20Escape%20%28USA%29.png" },
+    { title: "Street Fighter Alpha - Warriors Dreams", file: "Street Fighter Alpha - Warriors' Dreams (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Street%20Fighter%20Alpha%20-%20Warriors%27%20Dreams%20%28USA%29.png" },
+    { title: "Super Mario Bros Deluxe", file: "Super Mario Bros. Deluxe (USA, Europe) (Rev A).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Super%20Mario%20Bros.%20Deluxe%20%28USA%2C%20Europe%29.png" },
+    { title: "Tetris DX", file: "Tetris DX (World) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Tetris%20DX%20%28World%29.png" },
+    { title: "Wario Land 3", file: "Wario Land 3 (World) (En,Ja).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Wario%20Land%203%20%28World%29.png" },
+    { title: "Wario Land II", file: "Wario Land II (USA, Europe) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Wario%20Land%20II%20%28USA%2C%20Europe%29.png" }
+  ],
   n64: [
     { title: "007 - GoldenEye", file: "007 - GoldenEye.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/GoldenEye%20007%20%28USA%29.png" },
     { title: "Castlevania", file: "Castlevania.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Castlevania%20%28USA%29.png" },
@@ -554,6 +583,7 @@ document.getElementById('password-input').onkeydown = function(e) {
 document.getElementById('back-to-systems').onclick = function() { showScreen('systems'); };
 document.getElementById('back-to-library').onclick = function() { goBack('library'); };
 document.getElementById('back-to-systems-from-playing').onclick = function() { location.href = location.pathname; };
+document.getElementById('card-gbc').onclick     = function() { openSystem('gbc'); };
 document.getElementById('card-n64').onclick     = function() { openSystem('n64'); };
 document.getElementById('play-online-btn').onclick = function() { document.getElementById('online-modal').classList.add('active'); };
 document.getElementById('online-close').onclick = function() { document.getElementById('online-modal').classList.remove('active'); };
