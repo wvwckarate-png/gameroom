@@ -239,6 +239,28 @@
 
 <button class="play-online-btn" id="play-online-btn">🌐 PLAY ONLINE</button>
 
+<div class="online-modal" id="admin-modal">
+  <div class="online-modal-box">
+    <div class="online-modal-title">ADMIN PANEL</div>
+    <div class="online-modal-sub">CHANGE PASSWORD</div>
+    <div style="text-align:left; margin-bottom:12px;">
+      <span class="field-label">CURRENT PASSWORD</span>
+      <input type="password" id="admin-current" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
+    </div>
+    <div style="text-align:left; margin-bottom:12px;">
+      <span class="field-label">NEW PASSWORD</span>
+      <input type="password" id="admin-new" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
+    </div>
+    <div style="text-align:left; margin-bottom:12px;">
+      <span class="field-label">CONFIRM NEW PASSWORD</span>
+      <input type="password" id="admin-confirm" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
+    </div>
+    <div id="admin-error" style="font-size:11px; letter-spacing:1px; color:#e8373c; min-height:18px; margin-bottom:12px;"></div>
+    <button class="btn-primary" id="admin-save" style="margin-bottom:10px;">SAVE PASSWORD</button>
+    <button class="online-close" id="admin-cancel">CANCEL</button>
+  </div>
+</div>
+
 <div class="online-modal" id="online-modal">
   <div class="online-modal-box">
     <div class="online-modal-title">PLAY ONLINE</div>
@@ -254,7 +276,7 @@
 <div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v1.2 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
-var PASSWORD = "family123";
+var PASSWORD = localStorage.getItem('grPassword') || "family123";
 
 var SYSTEMS = {
   nes:     { label: "NES",      color: "#e8373c" },
@@ -477,6 +499,55 @@ function goBack(screen) {
 }
 
 document.getElementById('login-btn').onclick = handleLogin;
+
+// Admin panel — type 'g' 5 times to open
+var adminKeyBuffer = '';
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'g') {
+    adminKeyBuffer += 'g';
+    if (adminKeyBuffer.length >= 5) {
+      adminKeyBuffer = '';
+      document.getElementById('admin-modal').classList.add('active');
+      document.getElementById('admin-current').value = '';
+      document.getElementById('admin-new').value = '';
+      document.getElementById('admin-confirm').value = '';
+      document.getElementById('admin-error').textContent = '';
+    }
+  } else {
+    adminKeyBuffer = '';
+  }
+});
+
+document.getElementById('admin-save').onclick = function() {
+  var current = document.getElementById('admin-current').value;
+  var newPass = document.getElementById('admin-new').value;
+  var confirm = document.getElementById('admin-confirm').value;
+  var err = document.getElementById('admin-error');
+  var stored = localStorage.getItem('grPassword') || "family123";
+  if (current !== stored) {
+    err.textContent = 'Current password is wrong.';
+    return;
+  }
+  if (newPass.length < 4) {
+    err.textContent = 'New password must be at least 4 characters.';
+    return;
+  }
+  if (newPass !== confirm) {
+    err.textContent = 'Passwords do not match.';
+    return;
+  }
+  localStorage.setItem('grPassword', newPass);
+  PASSWORD = newPass;
+  err.style.color = '#2aaa4a';
+  err.textContent = 'Password updated!';
+  setTimeout(function() {
+    document.getElementById('admin-modal').classList.remove('active');
+  }, 1500);
+};
+
+document.getElementById('admin-cancel').onclick = function() {
+  document.getElementById('admin-modal').classList.remove('active');
+};
 document.getElementById('password-input').onkeydown = function(e) {
   if (e.key === 'Enter') handleLogin();
 };
