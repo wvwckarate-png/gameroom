@@ -172,6 +172,15 @@
         <div class="sys-count" id="count-gbc"></div>
       </div>
 
+      <div class="system-card" style="border:2px solid #cc220044;" id="card-nds">
+        <div class="top-bar" style="background:#cc2200;"></div>
+        <div class="icon-wrap float" style="animation-delay:2.1s">
+          <img src="icons/NDS.png" alt="Nintendo DS" style="filter:invert(1) drop-shadow(0 0 6px rgba(204,34,0,0.5));">
+        </div>
+        <div class="sys-label" style="color:#cc2200;">NINTENDO DS</div>
+        <div class="sys-count" id="count-nds"></div>
+      </div>
+
       <div class="system-card" style="border:2px solid #1a9be844;" id="card-gamegear">
         <div class="top-bar" style="background:#1a9be8;"></div>
         <div class="icon-wrap float" style="animation-delay:1.8s">
@@ -296,7 +305,8 @@ var SYSTEMS = {
   n64:     { label: "N64",      color: "#c0a020" },
   gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" },
   mame:    { label: "MAME ARCADE", color: "#ff6600" },
-  gamegear: { label: "GAME GEAR", color: "#1a9be8" }
+  gamegear: { label: "GAME GEAR", color: "#1a9be8" },
+  nds:      { label: "NINTENDO DS", color: "#cc2200" }
 };
 
 var EMU_CORES = {
@@ -308,7 +318,8 @@ var EMU_CORES = {
   n64:     "n64",
   gbc:     "gambatte",
   mame:    "mame2003_plus",
-  gamegear: "smsgg"
+  gamegear: "smsgg",
+  nds:      "nds"
 };
 
 var GAMES = {
@@ -427,7 +438,26 @@ var GAMES = {
     { title: "Mega Man - Dr. Wilys Revenge", file: "Mega Man - Dr. Wilys Revenge.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20-%20Dr.%20Wily%27s%20Revenge%20%28USA%29.png" },
     { title: "Mega Man II", file: "Mega Man II.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20II%20%28USA%29.png" }
   ],
-gamegear: [
+nds: [
+    { title: "Castlevania - Dawn of Sorrow", file: "Castlevania - Dawn of Sorrow (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Dawn%20of%20Sorrow%20%28USA%29.png" },
+    { title: "Castlevania - Order of Ecclesia", file: "Castlevania - Order of Ecclesia (USA) (En,Fr).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Order%20of%20Ecclesia%20%28USA%29.png" },
+    { title: "Castlevania - Portrait of Ruin", file: "Castlevania - Portrait of Ruin (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Portrait%20of%20Ruin%20%28USA%29.png" },
+    { title: "Contra 4", file: "Contra 4 (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Contra%204%20%28USA%29.png" },
+    { title: "Legend of Zelda - Phantom Hourglass", file: "Legend of Zelda, The - Phantom Hourglass (USA) (En,Fr,Es).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Phantom%20Hourglass%20%28USA%29.png" },
+    { title: "Legend of Zelda - Spirit Tracks", file: "Legend of Zelda, The - Spirit Tracks (USA) (En,Fr,Es) (Rev 1).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Spirit%20Tracks%20%28USA%29.png" },
+    { title: "Mario & Luigi - Bowsers Inside Story", file: "Mario & Luigi - Bowser's Inside Story (USA) (En,Fr,Es).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Mario%20%26%20Luigi%20-%20Bowser%27s%20Inside%20Story%20%28USA%29.png" },
+    { title: "Mario & Luigi - Partners in Time", file: "Mario & Luigi - Partners in Time (USA) (Rev 1).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Mario%20%26%20Luigi%20-%20Partners%20in%20Time%20%28USA%29.png" },
+    { title: "Mario Kart DS", file: "Mario Kart DS (USA) (En,Fr,De,Es,It).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Mario%20Kart%20DS%20%28USA%29.png" },
+    { title: "Mario vs. Donkey Kong - Mini-Land Mayhem", file: "Mario vs. Donkey Kong - Mini-Land...n,Fr,Es) (Rev 2) (NDSi Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Mario%20vs.%20Donkey%20Kong%20-%20Mini-Land%20Mayhem%21%20%28USA%29.png" },
+    { title: "Mario vs. Donkey Kong 2 - March of the Minis", file: "Mario vs. Donkey Kong 2 - March of the Minis (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Mario%20vs.%20Donkey%20Kong%202%20-%20March%20of%20the%20Minis%20%28USA%29.png" },
+    { title: "Metroid Prime Hunters", file: "Metroid Prime - Hunters (USA) (Rev 1).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Metroid%20Prime%20-%20Hunters%20%28USA%29.png" },
+    { title: "New Super Mario Bros", file: "New Super Mario Bros. (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/New%20Super%20Mario%20Bros.%20%28USA%29.png" },
+    { title: "Ninja Gaiden - Dragon Sword", file: "Ninja Gaiden - Dragon Sword (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Ninja%20Gaiden%20-%20Dragon%20Sword%20%28USA%29.png" },
+    { title: "Sonic Rush", file: "Sonic Rush (USA) (En,Ja,Fr,De,Es,It).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Sonic%20Rush%20%28USA%29.png" },
+    { title: "Sonic Rush Adventure", file: "Sonic Rush Adventure (USA) (En,Ja,Fr,De,Es,It).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Sonic%20Rush%20Adventure%20%28USA%29.png" },
+    { title: "Super Mario 64 DS", file: "Super Mario 64 DS (USA) (Rev 1).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Super%20Mario%2064%20DS%20%28USA%29.png" }
+  ],
+  gamegear: [
     { title: "Arena", file: "Arena (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Arena%20%28USA%2C%20Europe%29.png" },
     { title: "Ax Battler - A Legend of Golden Axe", file: "Ax Battler - A Legend of..., Europe, Brazil) (En).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Ax%20Battler%20-%20A%20Legend%20of%20Golden%20Axe%20%28USA%2C%20Europe%2C%20Brazil%29.png" },
     { title: "Baku Baku", file: "Baku Baku (USA).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Baku%20Baku%20%28USA%29.png" },
@@ -719,6 +749,7 @@ document.getElementById('card-gameboy').onclick = function() { openSystem('gameb
 document.getElementById('card-gba').onclick     = function() { openSystem('gba'); };
 document.getElementById('card-mame').onclick    = function() { openSystem('mame'); };
 document.getElementById('card-gamegear').onclick = function() { openSystem('gamegear'); };
+document.getElementById('card-nds').onclick       = function() { openSystem('nds'); };
 
 var sysList = Object.keys(GAMES);
 for (var s = 0; s < sysList.length; s++) {
