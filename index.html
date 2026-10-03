@@ -303,7 +303,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.0 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.1 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 var PASSWORD = localStorage.getItem('grPassword') || "family123";
@@ -339,6 +339,16 @@ function startSessionTimer() {
   warningShown = false;
   if (sessionTimer) clearInterval(sessionTimer);
   sessionTimer = setInterval(function() {
+    // Pause the clock when the game is paused or this window/tab isn't active
+    var emuPaused = !!(window.EJS_emulator && window.EJS_emulator.paused);
+    var windowInactive = document.hidden || !document.hasFocus();
+    if (emuPaused || windowInactive) {
+      var el = document.getElementById('session-timer');
+      el.style.color = '#888';
+      el.textContent = 'SESSION: ' + formatTime(sessionSeconds) + '  |  TODAY: ' + formatTime(getTimeUsedToday()) + '  |  ⏸ PAUSED';
+      return;
+    }
+    document.getElementById('session-timer').style.color = warningShown ? '#e8a020' : '#ffdc00';
     sessionSeconds++;
     addTimeUsedToday(1);
     var todayTotal = getTimeUsedToday();
