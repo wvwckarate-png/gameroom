@@ -63,24 +63,25 @@
     .game-name { font-size: 14px; letter-spacing: 1px; }
     .game-play { color: #444; font-size: 16px; padding-right: 20px; }
     .playing-box { background: rgba(255,255,255,0.02); border-radius: 4px; padding: 20px; text-align: center; }
-    .playing-now { color: #555; font-size: 10px; letter-spacing: 4px; margin-bottom: 12px; }
+    .playing-now { color: #555; font-size: 10px; letter-spacing: 4px; margin-bottom: 6px; }
+    #session-timer { color: #ffdc00; font-size: 11px; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Courier New', monospace; }
     .playing-title { font-size: clamp(16px,3vw,24px); font-weight: bold; color: #ffdc00; letter-spacing: 2px; margin-bottom: 8px; }
     .playing-system { font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; }
     #emulator-container { width: 100%; max-width: 800px; margin: 0 auto; background: #000; border: 1px solid #222; border-radius: 2px; min-height: 400px; position: relative; }
     .site-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; text-align: center; padding: 14px; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 3px; color: #ffdc00; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
-.play-online-btn { position: fixed; top: 20px; right: 20px; z-index: 600; background: linear-gradient(135deg, #1a8a3a, #0f5a25); border: 2px solid #2aaa4a; color: #fff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 12px 24px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 20px rgba(42,170,74,0.3); transition: transform 0.12s, box-shadow 0.12s; }
-.play-online-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 25px rgba(42,170,74,0.4); }
-.play-online-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
-.online-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
-.online-modal.active { display: flex; }
-.online-modal-box { background: #0f0f18; border: 2px solid #2aaa4a; border-radius: 16px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
-.online-modal-title { font-size: 20px; font-weight: bold; color: #2aaa4a; letter-spacing: 3px; margin-bottom: 8px; }
-.online-modal-sub { font-size: 10px; color: #555; letter-spacing: 3px; margin-bottom: 30px; }
-.online-step { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; text-align: left; font-size: 12px; color: #aaa; letter-spacing: 1px; line-height: 1.6; }
-.online-step span { color: #2aaa4a; font-weight: bold; }
-.online-link { color: #ffdc00; text-decoration: none; }
-.online-close { margin-top: 24px; background: transparent; border: 1px solid #333; color: #888; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; padding: 10px 24px; border-radius: 50px; cursor: pointer; }
-.online-close:hover { border-color: #666; color: #ccc; }
+    .play-online-btn { position: fixed; top: 20px; right: 20px; z-index: 600; background: linear-gradient(135deg, #1a8a3a, #0f5a25); border: 2px solid #2aaa4a; color: #fff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 12px 24px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 20px rgba(42,170,74,0.3); transition: transform 0.12s, box-shadow 0.12s; }
+    .play-online-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 25px rgba(42,170,74,0.4); }
+    .play-online-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
+    .online-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
+    .online-modal.active { display: flex; }
+    .online-modal-box { background: #0f0f18; border: 2px solid #2aaa4a; border-radius: 16px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
+    .online-modal-title { font-size: 20px; font-weight: bold; color: #2aaa4a; letter-spacing: 3px; margin-bottom: 8px; }
+    .online-modal-sub { font-size: 10px; color: #555; letter-spacing: 3px; margin-bottom: 30px; }
+    .online-step { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; text-align: left; font-size: 12px; color: #aaa; letter-spacing: 1px; line-height: 1.6; }
+    .online-step span { color: #2aaa4a; font-weight: bold; }
+    .online-link { color: #ffdc00; text-decoration: none; }
+    .online-close { margin-top: 24px; background: transparent; border: 1px solid #333; color: #888; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; padding: 10px 24px; border-radius: 50px; cursor: pointer; }
+    .online-close:hover { border-color: #666; color: #ccc; }
   </style>
 </head>
 <body>
@@ -239,6 +240,7 @@
     <button type="button" class="btn-back" id="back-to-systems-from-playing" style="margin-left:8px;">🕹️ ALL SYSTEMS</button>
     <div class="playing-box" id="playing-box">
       <div class="playing-now">NOW LOADING</div>
+      <div id="session-timer">SESSION: 0:00:00 &nbsp;|&nbsp; TODAY: 0:00:00</div>
       <div class="playing-title" id="playing-title"></div>
       <div class="playing-system" id="playing-system"></div>
       <div id="emulator-container"></div>
@@ -248,16 +250,21 @@
 
 <button class="play-online-btn" id="play-online-btn">🌐 PLAY ONLINE</button>
 
+<!-- Admin Modal -->
 <div class="online-modal" id="admin-modal">
   <div class="online-modal-box">
     <div class="online-modal-title">ADMIN PANEL</div>
-    <div class="online-modal-sub">CHANGE PASSWORD</div>
+    <div class="online-modal-sub">SETTINGS</div>
     <div style="text-align:left; margin-bottom:12px;">
-      <span class="field-label">CURRENT PASSWORD</span>
+      <span class="field-label">DAILY TIME LIMIT (MINUTES) — LEAVE BLANK TO KEEP CURRENT</span>
+      <input type="number" id="admin-time-limit" min="1" max="1440" placeholder="e.g. 60" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:2px;">
+    </div>
+    <div style="text-align:left; margin-bottom:12px;">
+      <span class="field-label">CURRENT PASSWORD — REQUIRED TO CHANGE PASSWORD</span>
       <input type="password" id="admin-current" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
     </div>
     <div style="text-align:left; margin-bottom:12px;">
-      <span class="field-label">NEW PASSWORD</span>
+      <span class="field-label">NEW PASSWORD — LEAVE BLANK TO KEEP CURRENT</span>
       <input type="password" id="admin-new" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
     </div>
     <div style="text-align:left; margin-bottom:12px;">
@@ -265,11 +272,12 @@
       <input type="password" id="admin-confirm" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
     </div>
     <div id="admin-error" style="font-size:11px; letter-spacing:1px; color:#e8373c; min-height:18px; margin-bottom:12px;"></div>
-    <button class="btn-primary" id="admin-save" style="margin-bottom:10px;">SAVE PASSWORD</button>
+    <button class="btn-primary" id="admin-save" style="margin-bottom:10px;">SAVE SETTINGS</button>
     <button class="online-close" id="admin-cancel">CANCEL</button>
   </div>
 </div>
 
+<!-- Online Modal -->
 <div class="online-modal" id="online-modal">
   <div class="online-modal-box">
     <div class="online-modal-title">PLAY ONLINE</div>
@@ -282,22 +290,100 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v1.8 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<!-- Time's Up Modal -->
+<div class="online-modal" id="timesup-modal">
+  <div class="online-modal-box" style="border-color:#e8373c;">
+    <div class="online-modal-title" style="color:#e8373c;">⏰ TIME'S UP!</div>
+    <div class="online-modal-sub">DAILY LIMIT REACHED</div>
+    <div class="online-step" style="text-align:center; font-size:14px; color:#ccc;">
+      You've used your full gaming time for today.<br>Come back tomorrow for more!
+    </div>
+    <div id="timesup-info" style="font-size:11px; color:#555; letter-spacing:2px; margin-top:16px;"></div>
+    <button class="btn-primary" id="timesup-ok" style="margin-top:20px; margin-bottom:0;">OK</button>
+  </div>
+</div>
+
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.0 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 var PASSWORD = localStorage.getItem('grPassword') || "family123";
+var DAILY_LIMIT_MINUTES = parseInt(localStorage.getItem('grTimeLimit')) || 60;
+
+var sessionTimer = null;
+var sessionSeconds = 0;
+var warningShown = false;
+
+function getTodayKey() {
+  var d = new Date();
+  return 'grTime_' + d.getFullYear() + '_' + d.getMonth() + '_' + d.getDate();
+}
+
+function getTimeUsedToday() {
+  return parseInt(localStorage.getItem(getTodayKey())) || 0;
+}
+
+function addTimeUsedToday(seconds) {
+  var current = getTimeUsedToday();
+  localStorage.setItem(getTodayKey(), current + seconds);
+}
+
+function formatTime(seconds) {
+  var h = Math.floor(seconds / 3600);
+  var m = Math.floor((seconds % 3600) / 60);
+  var s = seconds % 60;
+  return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function startSessionTimer() {
+  sessionSeconds = 0;
+  warningShown = false;
+  if (sessionTimer) clearInterval(sessionTimer);
+  sessionTimer = setInterval(function() {
+    sessionSeconds++;
+    addTimeUsedToday(1);
+    var todayTotal = getTimeUsedToday();
+    var limitSeconds = DAILY_LIMIT_MINUTES * 60;
+    var remaining = limitSeconds - todayTotal;
+    document.getElementById('session-timer').textContent =
+      'SESSION: ' + formatTime(sessionSeconds) + '  |  TODAY: ' + formatTime(todayTotal);
+    if (remaining <= 300 && remaining > 0 && !warningShown) {
+      warningShown = true;
+      document.getElementById('session-timer').style.color = '#e8a020';
+      document.getElementById('session-timer').textContent =
+        'SESSION: ' + formatTime(sessionSeconds) + '  |  ⚠ ' + Math.ceil(remaining / 60) + ' MIN LEFT TODAY';
+    }
+    if (remaining <= 0) {
+      stopSessionTimer();
+      showTimesUp(todayTotal);
+    }
+  }, 1000);
+}
+
+function stopSessionTimer() {
+  if (sessionTimer) {
+    clearInterval(sessionTimer);
+    sessionTimer = null;
+  }
+}
+
+function showTimesUp(totalSeconds) {
+  var modal = document.getElementById('timesup-modal');
+  var info = document.getElementById('timesup-info');
+  info.textContent = 'TOTAL TODAY: ' + formatTime(totalSeconds || getTimeUsedToday());
+  modal.classList.add('active');
+}
 
 var SYSTEMS = {
-  nes:     { label: "NES",      color: "#e8373c" },
-  snes:    { label: "SNES",     color: "#6a3db8" },
-  genesis: { label: "GENESIS",  color: "#1a6fb5" },
-  gameboy: { label: "GAME BOY", color: "#4a7c59" },
-  gba:     { label: "GBA",      color: "#7b3fa0" },
-  n64:     { label: "N64",      color: "#c0a020" },
+  nes:     { label: "NES",            color: "#e8373c" },
+  snes:    { label: "SNES",           color: "#6a3db8" },
+  genesis: { label: "GENESIS",        color: "#1a6fb5" },
+  gameboy: { label: "GAME BOY",       color: "#4a7c59" },
+  gba:     { label: "GBA",            color: "#7b3fa0" },
+  n64:     { label: "N64",            color: "#c0a020" },
   gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" },
-  mame:    { label: "MAME ARCADE", color: "#ff6600" },
-  gamegear: { label: "GAME GEAR", color: "#1a9be8" },
-  nds:      { label: "NINTENDO DS", color: "#cc2200" }
+  mame:    { label: "MAME ARCADE",    color: "#ff6600" },
+  gamegear:{ label: "GAME GEAR",      color: "#1a9be8" },
+  nds:     { label: "NINTENDO DS",    color: "#cc2200" }
 };
 
 var EMU_CORES = {
@@ -309,8 +395,8 @@ var EMU_CORES = {
   n64:     "n64",
   gbc:     "gambatte",
   mame:    "mame2003_plus",
-  gamegear: "smsgg",
-  nds:      "nds"
+  gamegear:"smsgg",
+  nds:     "nds"
 };
 
 var GAMES = {
@@ -359,7 +445,7 @@ var GAMES = {
     { title: "Super Mario 64", file: "Super Mario 64.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Super%20Mario%2064%20%28USA%29.png" },
     { title: "Super Smash Bros", file: "Super Smash Bros.z64", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/Super%20Smash%20Bros.%20%28USA%29.png" }
   ],
-nes: [
+  nes: [
     { title: "Battletoads", file: "Battletoads.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Battletoads%20%28USA%29.png" },
     { title: "Bionic Commando", file: "Bionic Commando (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Bionic%20Commando%20%28USA%29.png" },
     { title: "Castlevania", file: "Castlevania.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Castlevania%20%28USA%29.png" },
@@ -452,7 +538,7 @@ nes: [
     { title: "Mega Man - Dr. Wilys Revenge", file: "Mega Man - Dr. Wilys Revenge.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20-%20Dr.%20Wily%27s%20Revenge%20%28USA%29.png" },
     { title: "Mega Man II", file: "Mega Man II.gb", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy/Named_Boxarts/Mega%20Man%20II%20%28USA%29.png" }
   ],
-nds: [
+  nds: [
     { title: "Castlevania - Dawn of Sorrow", file: "Castlevania - Dawn of Sorrow (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Dawn%20of%20Sorrow%20%28USA%29.png" },
     { title: "Castlevania - Order of Ecclesia", file: "Castlevania - Order of Ecclesia (USA) (En,Fr).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Order%20of%20Ecclesia%20%28USA%29.png" },
     { title: "Castlevania - Portrait of Ruin", file: "Castlevania - Portrait of Ruin (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/Castlevania%20-%20Portrait%20of%20Ruin%20%28USA%29.png" },
@@ -494,7 +580,7 @@ nds: [
     { title: "Super Columns", file: "Super Columns (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Super%20Columns%20%28USA%2C%20Europe%29.png" },
     { title: "Tails Adventure", file: "Tails Adventure (World) (En,Ja).zip", thumb: "https://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/Tails%20Adventure%20%28World%29.png" }
   ],
-mame: [
+  mame: [
     { title: "1942", file: "1942.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/2/2a/1942_arcade_game_flyer.jpg" },
     { title: "1943", file: "1943.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/3/3e/1943_Midway_flyer.jpg" },
     { title: "Asteroids", file: "asteroid.zip", thumb: "https://upload.wikimedia.org/wikipedia/en/d/d5/Asteroids_game_vector_wars.png" },
@@ -660,6 +746,10 @@ function openGame(game) {
   document.getElementById('playing-system').style.color = sys.color;
   document.getElementById('playing-box').style.borderColor = sys.color;
 
+  var timerEl = document.getElementById('session-timer');
+  timerEl.style.color = '#ffdc00';
+  timerEl.textContent = 'SESSION: 0:00:00  |  TODAY: ' + formatTime(getTimeUsedToday());
+
   var container = document.getElementById('emulator-container');
   container.innerHTML = '';
 
@@ -676,6 +766,8 @@ function openGame(game) {
   window.EJS_gameUrl   = 'roms/' + folder + '/' + game.file;
   if (currentSystem === 'mame') {
     window.EJS_gameParentUrl = 'roms/' + folder + '/';
+  } else {
+    window.EJS_gameParentUrl = undefined;
   }
   window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   window.EJS_startOnLoaded = true;
@@ -684,10 +776,12 @@ function openGame(game) {
   script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
   document.body.appendChild(script);
 
+  startSessionTimer();
   showScreen('playing');
 }
 
 function goBack(screen) {
+  stopSessionTimer();
   if (screen === 'library') {
     location.href = location.pathname + '?system=' + currentSystem;
   } else {
@@ -705,10 +799,12 @@ document.addEventListener('keypress', function(e) {
     if (adminKeyBuffer.length >= 5) {
       adminKeyBuffer = '';
       document.getElementById('admin-modal').classList.add('active');
+      document.getElementById('admin-time-limit').value = DAILY_LIMIT_MINUTES;
       document.getElementById('admin-current').value = '';
       document.getElementById('admin-new').value = '';
       document.getElementById('admin-confirm').value = '';
       document.getElementById('admin-error').textContent = '';
+      document.getElementById('admin-error').style.color = '#e8373c';
     }
   } else {
     adminKeyBuffer = '';
@@ -716,27 +812,46 @@ document.addEventListener('keypress', function(e) {
 });
 
 document.getElementById('admin-save').onclick = function() {
+  var newLimit = document.getElementById('admin-time-limit').value;
   var current = document.getElementById('admin-current').value;
   var newPass = document.getElementById('admin-new').value;
   var confirm = document.getElementById('admin-confirm').value;
   var err = document.getElementById('admin-error');
-  var stored = localStorage.getItem('grPassword') || "family123";
-  if (current !== stored) {
-    err.textContent = 'Current password is wrong.';
-    return;
+  err.style.color = '#e8373c';
+
+  // Save time limit if provided
+  if (newLimit !== '') {
+    var limitNum = parseInt(newLimit);
+    if (limitNum >= 1 && limitNum <= 1440) {
+      DAILY_LIMIT_MINUTES = limitNum;
+      localStorage.setItem('grTimeLimit', limitNum);
+    } else {
+      err.textContent = 'Time limit must be between 1 and 1440 minutes.';
+      return;
+    }
   }
-  if (newPass.length < 4) {
-    err.textContent = 'New password must be at least 4 characters.';
-    return;
+
+  // Save password if new password provided
+  if (newPass !== '') {
+    var stored = localStorage.getItem('grPassword') || "family123";
+    if (current !== stored) {
+      err.textContent = 'Current password is wrong.';
+      return;
+    }
+    if (newPass.length < 4) {
+      err.textContent = 'New password must be at least 4 characters.';
+      return;
+    }
+    if (newPass !== confirm) {
+      err.textContent = 'Passwords do not match.';
+      return;
+    }
+    localStorage.setItem('grPassword', newPass);
+    PASSWORD = newPass;
   }
-  if (newPass !== confirm) {
-    err.textContent = 'Passwords do not match.';
-    return;
-  }
-  localStorage.setItem('grPassword', newPass);
-  PASSWORD = newPass;
+
   err.style.color = '#2aaa4a';
-  err.textContent = 'Password updated!';
+  err.textContent = 'Settings saved!';
   setTimeout(function() {
     document.getElementById('admin-modal').classList.remove('active');
   }, 1500);
@@ -745,12 +860,22 @@ document.getElementById('admin-save').onclick = function() {
 document.getElementById('admin-cancel').onclick = function() {
   document.getElementById('admin-modal').classList.remove('active');
 };
+
+document.getElementById('timesup-ok').onclick = function() {
+  document.getElementById('timesup-modal').classList.remove('active');
+  stopSessionTimer();
+  showScreen('systems');
+};
+
 document.getElementById('password-input').onkeydown = function(e) {
   if (e.key === 'Enter') handleLogin();
 };
 document.getElementById('back-to-systems').onclick = function() { showScreen('systems'); };
 document.getElementById('back-to-library').onclick = function() { goBack('library'); };
-document.getElementById('back-to-systems-from-playing').onclick = function() { location.href = location.pathname; };
+document.getElementById('back-to-systems-from-playing').onclick = function() {
+  stopSessionTimer();
+  location.href = location.pathname;
+};
 document.getElementById('card-gbc').onclick     = function() { openSystem('gbc'); };
 document.getElementById('card-n64').onclick     = function() { openSystem('n64'); };
 document.getElementById('play-online-btn').onclick = function() { document.getElementById('online-modal').classList.add('active'); };
