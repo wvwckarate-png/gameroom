@@ -9,7 +9,7 @@
     body { background: #0a0a0f; font-family: 'Courier New', Courier, monospace; color: #e8e8e8; min-height: 100vh; }
     body::before { content: ''; position: fixed; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px); pointer-events: none; z-index: 1000; }
     body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(255,220,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,220,0,0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: 0; pointer-events: none; }
-    .screen { display: none; position: relative; z-index: 1; min-height: 100vh; padding: 40px 20px; }
+    .screen { display: none; position: relative; z-index: 1; min-height: 100vh; padding: 40px 20px 70px; }
     .screen.active { display: block; }
     #login.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
@@ -53,15 +53,16 @@
     .library-accent { width: 4px; height: 28px; border-radius: 2px; }
     .library-title { font-size: clamp(18px,3vw,28px); font-weight: bold; letter-spacing: 3px; }
     .library-sub { font-size: 10px; color: #555; letter-spacing: 4px; margin-bottom: 30px; margin-left: 16px; }
-    .game-list { display: flex; flex-direction: column; gap: 8px; }
-    .game-row { background: rgba(255,255,255,0.02); border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; animation: slideIn 0.3s ease both; overflow: hidden; }
-    .game-row:hover { background: rgba(255,220,0,0.06); border-color: #ffdc00; }
-    .game-thumb { width: 70px; min-width: 70px; height: 90px; object-fit: cover; display: block; background: #111; }
-    .game-thumb-placeholder { width: 70px; min-width: 70px; height: 90px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-    .game-info { display: flex; align-items: center; gap: 16px; padding: 0 16px; flex: 1; }
-    .game-num { color: #333; font-size: 11px; min-width: 24px; }
-    .game-name { font-size: 14px; letter-spacing: 1px; }
-    .game-play { color: #444; font-size: 16px; padding-right: 20px; }
+    #library .container { max-width: 1100px; }
+    .game-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .game-row { background: rgba(255,255,255,0.02); border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; gap: 14px; padding: 10px; cursor: pointer; transition: transform 0.12s, background 0.15s, border-color 0.15s; animation: slideIn 0.3s ease both; overflow: hidden; min-width: 0; box-shadow: 0 4px 0 rgba(0,0,0,0.4); }
+    .game-row:hover { background: rgba(255,220,0,0.06); border-color: #ffdc00; transform: translateY(-2px); }
+    .game-row:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.4); }
+    .game-thumb { width: 84px; min-width: 84px; height: 110px; object-fit: cover; display: block; background: #111; border-radius: 6px; }
+    .game-thumb-placeholder { width: 84px; min-width: 84px; height: 110px; background: #111; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .game-name { font-size: 14px; letter-spacing: 1px; line-height: 1.4; overflow-wrap: anywhere; }
+    @media (max-width: 860px) { .game-list { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .game-list { grid-template-columns: 1fr; } }
     .playing-box { background: rgba(255,255,255,0.02); border-radius: 4px; padding: 20px; text-align: center; }
     .playing-now { color: #555; font-size: 10px; letter-spacing: 4px; margin-bottom: 6px; }
     #session-timer { color: #ffdc00; font-size: 11px; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Courier New', monospace; }
@@ -313,7 +314,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.4 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.5 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 var PASSWORD = localStorage.getItem('grPassword') || "family123";
@@ -468,6 +469,8 @@ var EMU_CORES = {
 
 var GAMES = {
   gbc: [
+    { title: "Mega Man Xtreme", file: "Mega Man Xtreme (USA, Europe) (GB Compatible).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mega%20Man%20Xtreme%20(USA%2C%20Europe)%20(GB%20Compatible).png" },
+    { title: "Mega Man Xtreme 2", file: "Mega Man Xtreme 2 (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mega%20Man%20Xtreme%202%20(USA%2C%20Europe).png" },
     { title: "Deer Hunter", file: "Deer Hunter (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Deer%20Hunter%20%28USA%29.png" },
     { title: "Dragon Warrior I & II", file: "Dragon Warrior I & II (USA) (SGB Enhanced).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20I%20_%20II%20(USA)%20(SGB%20Enhanced)%20(GB%20Compatible).png" },
     { title: "Dragon Warrior III", file: "Dragon Warrior III (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Dragon%20Warrior%20III%20(USA).png" },
@@ -541,6 +544,8 @@ var GAMES = {
     { title: "Mike Tysons Punch-Out!!", file: "Mike Tysons Punch-Out!!.nes", thumb: "icons/boxart/nes_punchout.png" },
     { title: "Ms Pac-Man", file: "Ms Pac-Man.nes", thumb: "icons/boxart/nes_ms_pacman.png" },
     { title: "Ninja Gaiden", file: "Ninja Gaiden.nes", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Ninja%20Gaiden%20%28USA%29.png" },
+    { title: "Ninja Gaiden II - The Dark Sword of Chaos", file: "Ninja Gaiden II - The Dark Sword of Chaos (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Ninja%20Gaiden%20II%20-%20The%20Dark%20Sword%20of%20Chaos%20(USA).png" },
+    { title: "Ninja Gaiden III - The Ancient Ship of Doom", file: "Ninja Gaiden III - The Ancient Ship of Doom (USA).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/Ninja%20Gaiden%20III%20-%20The%20Ancient%20Ship%20of%20Doom%20(USA).png" },
     { title: "Pac-Man", file: "Pac-Man.nes", thumb: "icons/boxart/nes_pacman.png" },
     { title: "Pacmania", file: "Pacmania.nes", thumb: "icons/boxart/nes_pacmania.png" },
     { title: "Q-bert", file: "Q-bert.nes", thumb: "icons/boxart/nes_qbert.png" },
@@ -799,11 +804,7 @@ function openSystem(sysId) {
     row.innerHTML =
       '<img class="game-thumb" src="' + game.thumb + '" alt="' + game.title + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' +
       '<div class="game-thumb-placeholder" style="display:none">🎮</div>' +
-      '<div class="game-info">' +
-        '<span class="game-num">' + String(i + 1).padStart(2, '0') + '</span>' +
-        '<span class="game-name">' + game.title + '</span>' +
-      '</div>' +
-      '<span class="game-play">&#9654;</span>';
+      '<span class="game-name">' + game.title + '</span>';
     (function(g) { row.onclick = function() { openGame(g); }; })(game);
     list.appendChild(row);
   }
