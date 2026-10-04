@@ -314,7 +314,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.6 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.7 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 var PASSWORD = localStorage.getItem('grPassword') || "family123";
@@ -366,8 +366,28 @@ function playAlarm() {
   } catch (e) {}
 }
 
+// In fullscreen only the emulator's element is visible, so the warning banner
+// has to live inside it or it never shows. Moved back to <body> on exit.
+function placeSaveWarning() {
+  var box = document.getElementById('save-warning');
+  var fs = document.fullscreenElement || document.webkitFullscreenElement;
+  var host = fs || document.body;
+  if (box.parentNode !== host) host.appendChild(box);
+}
+
+function exitFullscreenIfNeeded() {
+  try {
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } catch (e) {}
+}
+
+document.addEventListener('fullscreenchange', placeSaveWarning);
+document.addEventListener('webkitfullscreenchange', placeSaveWarning);
+
 function showSaveWarning() {
   var box = document.getElementById('save-warning');
+  placeSaveWarning();
   box.classList.add('active');
   playAlarm();
   if (saveWarnHideTimer) clearTimeout(saveWarnHideTimer);
@@ -435,6 +455,7 @@ function stopSessionTimer() {
 }
 
 function showTimesUp(totalSeconds) {
+  exitFullscreenIfNeeded(); // the modal lives in <body>, hidden while fullscreen
   var modal = document.getElementById('timesup-modal');
   var info = document.getElementById('timesup-info');
   info.textContent = 'TOTAL TODAY: ' + formatTime(totalSeconds || getTimeUsedToday());
