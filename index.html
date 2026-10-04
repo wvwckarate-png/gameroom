@@ -77,6 +77,11 @@
     .online-modal-box { background: #0f0f18; border: 2px solid #2aaa4a; border-radius: 16px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
     .online-modal-title { font-size: 20px; font-weight: bold; color: #2aaa4a; letter-spacing: 3px; margin-bottom: 8px; }
     .online-modal-sub { font-size: 10px; color: #555; letter-spacing: 3px; margin-bottom: 30px; }
+    #save-warning { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 950; background: #e8373c; color: #fff; text-align: center; padding: 18px 20px; font-family: 'Courier New', monospace; letter-spacing: 2px; border-bottom: 4px solid #ffdc00; cursor: pointer; animation: savePulse 0.8s infinite alternate; }
+    #save-warning.active { display: block; }
+    #save-warning .sw-title { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
+    #save-warning .sw-sub { font-size: 13px; }
+    @keyframes savePulse { from { background: #e8373c; } to { background: #8a1a1d; } }
     .online-step { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; text-align: left; font-size: 12px; color: #aaa; letter-spacing: 1px; line-height: 1.6; }
     .online-step span { color: #2aaa4a; font-weight: bold; }
     .online-link { color: #ffdc00; text-decoration: none; }
@@ -291,6 +296,11 @@
 </div>
 
 <!-- Time's Up Modal -->
+<div id="save-warning">
+  <div class="sw-title">⏰ 1 MINUTE LEFT — SAVE YOUR GAME NOW!</div>
+  <div class="sw-sub">Open the game menu and choose SAVE STATE before time runs out. (Click to dismiss)</div>
+</div>
+
 <div class="online-modal" id="timesup-modal">
   <div class="online-modal-box" style="border-color:#e8373c;">
     <div class="online-modal-title" style="color:#e8373c;">⏰ TIME'S UP!</div>
@@ -303,7 +313,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.1 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.2 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 var PASSWORD = localStorage.getItem('grPassword') || "family123";
@@ -334,9 +344,45 @@ function formatTime(seconds) {
   return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
 
+var saveWarned = false;
+var saveWarnHideTimer = null;
+
+function playAlarm() {
+  try {
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    var ctx = new Ctx();
+    for (var i = 0; i < 3; i++) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = 880;
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.4);
+      osc.stop(ctx.currentTime + i * 0.4 + 0.2);
+    }
+  } catch (e) {}
+}
+
+function showSaveWarning() {
+  var box = document.getElementById('save-warning');
+  box.classList.add('active');
+  playAlarm();
+  if (saveWarnHideTimer) clearTimeout(saveWarnHideTimer);
+  saveWarnHideTimer = setTimeout(hideSaveWarning, 30000);
+}
+
+function hideSaveWarning() {
+  document.getElementById('save-warning').classList.remove('active');
+  if (saveWarnHideTimer) { clearTimeout(saveWarnHideTimer); saveWarnHideTimer = null; }
+}
+
 function startSessionTimer() {
   sessionSeconds = 0;
   warningShown = false;
+  saveWarned = false;
+  hideSaveWarning();
   if (sessionTimer) clearInterval(sessionTimer);
   sessionTimer = setInterval(function() {
     // Pause the clock when the game is paused or this window/tab isn't active
@@ -362,14 +408,25 @@ function startSessionTimer() {
       document.getElementById('session-timer').textContent =
         'SESSION: ' + formatTime(sessionSeconds) + '  |  ⚠ ' + Math.ceil(remaining / 60) + ' MIN LEFT TODAY';
     }
+    if (remaining <= 60 && remaining > 0) {
+      document.getElementById('session-timer').style.color = '#e8373c';
+      document.getElementById('session-timer').textContent =
+        'SESSION: ' + formatTime(sessionSeconds) + '  |  ⚠ SAVE NOW — ' + remaining + ' SEC LEFT';
+      if (!saveWarned) {
+        saveWarned = true;
+        showSaveWarning();
+      }
+    }
     if (remaining <= 0) {
       stopSessionTimer();
+      hideSaveWarning();
       showTimesUp(todayTotal);
     }
   }, 1000);
 }
 
 function stopSessionTimer() {
+  hideSaveWarning();
   if (sessionTimer) {
     clearInterval(sessionTimer);
     sessionTimer = null;
