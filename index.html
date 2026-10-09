@@ -71,6 +71,13 @@
     .playing-system { font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; }
     #emulator-container { width: 100%; max-width: 800px; margin: 0 auto; background: #000; border: 1px solid #222; border-radius: 2px; min-height: 400px; position: relative; }
     .game-row:focus-visible, .system-card:focus-visible { outline: 2px solid #ffdc00; outline-offset: 2px; }
+    .override-box { margin-top: 18px; padding-top: 14px; border-top: 1px solid #222; text-align: left; }
+    .override-box input { width: 100%; background: #0d0d0d; border: 2px solid #333; color: #ffdc00; font-size: 16px; padding: 10px 14px; border-radius: 2px; font-family: inherit; letter-spacing: 6px; margin-bottom: 10px; }
+    .override-box input:focus { outline: none; border-color: #ffdc00; }
+    .ov-btns { display: flex; gap: 8px; }
+    .ov-btns button { flex: 1; background: transparent; border: 1px solid #2aaa4a; color: #2aaa4a; font-family: inherit; font-size: 11px; letter-spacing: 2px; padding: 10px 6px; border-radius: 50px; cursor: pointer; }
+    .ov-btns button:hover { background: rgba(42,170,74,0.15); }
+    .ov-msg { font-size: 11px; letter-spacing: 1px; min-height: 16px; margin-top: 8px; text-align: center; color: #e8373c; }
     .site-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; text-align: center; padding: 14px; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 3px; color: #ffdc00; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
     .play-online-btn { position: fixed; top: 20px; right: 20px; z-index: 600; background: linear-gradient(135deg, #1a8a3a, #0f5a25); border: 2px solid #2aaa4a; color: #fff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 12px 24px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 20px rgba(42,170,74,0.3); transition: transform 0.12s, box-shadow 0.12s; }
     .play-online-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 25px rgba(42,170,74,0.4); }
@@ -279,6 +286,15 @@
       <span class="field-label">CONFIRM NEW PASSWORD</span>
       <input type="password" id="admin-confirm" style="width:100%; background:#0d0d0d; border:2px solid #333; color:#ffdc00; font-size:16px; padding:10px 14px; border-radius:2px; font-family:inherit; letter-spacing:3px;">
     </div>
+    <div class="override-box">
+      <span class="field-label">PARENT CODE — EXTRA TIME FOR TODAY</span>
+      <input type="password" class="ov-code" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="....">
+      <div class="ov-btns">
+        <button type="button" class="ov-hour">+1 HOUR</button>
+        <button type="button" class="ov-unlimited">NO LIMIT TODAY</button>
+      </div>
+      <div class="ov-msg"></div>
+    </div>
     <div id="admin-error" style="font-size:11px; letter-spacing:1px; color:#e8373c; min-height:18px; margin-bottom:12px;"></div>
     <button class="btn-primary" id="admin-save" style="margin-bottom:10px;">SAVE SETTINGS</button>
     <button class="online-close" id="admin-cancel">CANCEL</button>
@@ -313,10 +329,20 @@
     </div>
     <div id="timesup-info" style="font-size:11px; color:#555; letter-spacing:2px; margin-top:16px;"></div>
     <button class="btn-primary" id="timesup-ok" style="margin-top:20px; margin-bottom:0;">OK</button>
+    <div class="override-box">
+      <span class="field-label">PARENT CODE — EXTRA TIME FOR TODAY</span>
+      <input type="password" class="ov-code" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="....">
+      <div class="ov-btns">
+        <button type="button" class="ov-hour">+1 HOUR</button>
+        <button type="button" class="ov-unlimited">NO LIMIT TODAY</button>
+      </div>
+      <div class="ov-msg"></div>
+    </div>
+
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.8 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.9 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 // localStorage can throw (private browsing, blocked site data) - never let that kill the page
@@ -335,6 +361,14 @@ function getTodayKey() {
   var d = new Date();
   return 'grTime_' + d.getFullYear() + '_' + d.getMonth() + '_' + d.getDate();
 }
+
+function getDayStamp() { return getTodayKey().slice('grTime_'.length); }
+
+// Parent override: extra time / no limit, for today only (keys include the date so they expire on their own)
+function getBonusSeconds() { return parseInt(lsGet('grBonus_' + getDayStamp())) || 0; }
+function isUnlimitedToday() { return lsGet('grUnlimited_' + getDayStamp()) === '1'; }
+function getLimitSeconds() { return DAILY_LIMIT_MINUTES * 60 + getBonusSeconds(); }
+function isOverLimit() { return !isUnlimitedToday() && getTimeUsedToday() >= getLimitSeconds(); }
 
 function getTimeUsedToday() {
   return parseInt(lsGet(getTodayKey())) || 0;
@@ -412,8 +446,8 @@ function setTimerDisplay(text, color) {
   el.textContent = text;
 }
 
-function startSessionTimer() {
-  sessionSeconds = 0;
+function startSessionTimer(keepSession) {
+  if (!keepSession) sessionSeconds = 0;
   saveWarned = false;
   hideSaveWarning();
   if (sessionTimer) clearInterval(sessionTimer);
@@ -433,9 +467,11 @@ function startSessionTimer() {
     sessionSeconds++;
     addTimeUsedToday(1);
     var todayTotal = getTimeUsedToday();
-    var remaining = DAILY_LIMIT_MINUTES * 60 - todayTotal;
+    var remaining = getLimitSeconds() - todayTotal;
     base = 'SESSION: ' + formatTime(sessionSeconds) + '  |  TODAY: ' + formatTime(todayTotal);
-    if (remaining <= 0) {
+    if (isUnlimitedToday()) {
+      setTimerDisplay(base + '  |  ∞ NO LIMIT TODAY', '#2aaa4a');
+    } else if (remaining <= 0) {
       stopSessionTimer();
       showTimesUp(todayTotal);
     } else if (remaining <= 60) {
@@ -447,6 +483,7 @@ function startSessionTimer() {
     } else if (remaining <= 300) {
       setTimerDisplay(base + '  |  ⚠ ' + Math.ceil(remaining / 60) + ' MIN LEFT', '#e8a020');
     } else {
+      saveWarned = false; // re-arm the 1-minute warning in case time was added
       setTimerDisplay(base, '#ffdc00');
     }
   }, 1000);
@@ -466,6 +503,7 @@ function showTimesUp(totalSeconds) {
   var modal = document.getElementById('timesup-modal');
   var info = document.getElementById('timesup-info');
   info.textContent = 'TOTAL TODAY: ' + formatTime(totalSeconds || getTimeUsedToday());
+  refreshOverrideMessages(false);
   modal.classList.add('active');
 }
 
@@ -885,7 +923,7 @@ function openSystem(sysId) {
 }
 
 function openGame(game) {
-  if (getTimeUsedToday() >= DAILY_LIMIT_MINUTES * 60) {
+  if (isOverLimit()) {
     showTimesUp(getTimeUsedToday());
     return;
   }
@@ -933,6 +971,82 @@ function goBack(screen) {
 
 document.getElementById('login-btn').onclick = handleLogin;
 
+// ---- Parent override (code is stored only as a salted hash) ----
+var OVERRIDE_HASH = 'f53a484ffae09c9250ddb8e681d824517289a13bf55621f1f142abbb7e310ce4';
+var overrideFails = 0;
+var overrideLockedUntil = 0;
+
+function sha256Hex(text) {
+  if (!(window.crypto && crypto.subtle)) return Promise.reject(new Error('no crypto'));
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function(buf) {
+    return Array.prototype.map.call(new Uint8Array(buf), function(b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+  });
+}
+
+function overrideStatusText() {
+  if (isUnlimitedToday()) return 'NO LIMIT ACTIVE FOR TODAY';
+  var extra = getBonusSeconds() / 3600;
+  return extra > 0 ? '+' + extra + ' HOUR' + (extra > 1 ? 'S' : '') + ' ADDED TODAY' : '';
+}
+
+function refreshOverrideMessages(isError, text) {
+  var boxes = document.querySelectorAll('.ov-msg');
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].style.color = isError ? '#e8373c' : '#2aaa4a';
+    boxes[i].textContent = text !== undefined ? text : overrideStatusText();
+  }
+}
+
+function applyOverride(mode) {
+  if (mode === 'unlimited') {
+    lsSet('grUnlimited_' + getDayStamp(), '1');
+  } else {
+    lsSet('grBonus_' + getDayStamp(), getBonusSeconds() + 3600);
+  }
+  hideSaveWarning();
+  document.getElementById('timesup-modal').classList.remove('active');
+  // If the game was frozen by "time's up", wake it and restart the clock
+  var onPlaying = document.getElementById('playing').classList.contains('active');
+  if (onPlaying) {
+    if (!sessionTimer) startSessionTimer(true);
+    try { if (window.EJS_emulator && window.EJS_emulator.paused) window.EJS_emulator.play(); } catch (e) {}
+  }
+}
+
+function tryOverride(box, mode) {
+  var input = box.querySelector('.ov-code');
+  var code = input.value;
+  input.value = '';
+  var now = Date.now();
+  if (now < overrideLockedUntil) {
+    refreshOverrideMessages(true, 'TOO MANY TRIES — WAIT ' + Math.ceil((overrideLockedUntil - now) / 1000) + 's');
+    return;
+  }
+  sha256Hex('gameroom-override:' + code).then(function(hash) {
+    if (hash === OVERRIDE_HASH) {
+      overrideFails = 0;
+      applyOverride(mode);
+      refreshOverrideMessages(false);
+    } else {
+      overrideFails++;
+      if (overrideFails >= 5) {
+        overrideFails = 0;
+        overrideLockedUntil = Date.now() + 60000;
+        refreshOverrideMessages(true, 'TOO MANY TRIES — LOCKED FOR 60s');
+      } else {
+        refreshOverrideMessages(true, 'WRONG CODE');
+      }
+    }
+  }).catch(function() {
+    refreshOverrideMessages(true, 'CODE CHECK NEEDS HTTPS');
+  });
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.override-box'), function(box) {
+  box.querySelector('.ov-hour').onclick = function() { tryOverride(box, 'hour'); };
+  box.querySelector('.ov-unlimited').onclick = function() { tryOverride(box, 'unlimited'); };
+});
+
 // Admin panel — type 'g' 5 times to open
 var adminKeyBuffer = '';
 document.addEventListener('keypress', function(e) {
@@ -949,6 +1063,7 @@ document.addEventListener('keypress', function(e) {
       document.getElementById('admin-confirm').value = '';
       document.getElementById('admin-error').textContent = '';
       document.getElementById('admin-error').style.color = '#e8373c';
+      refreshOverrideMessages(false);
     }
   } else {
     adminKeyBuffer = '';
