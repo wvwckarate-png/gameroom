@@ -78,6 +78,43 @@
     .ov-btns button { flex: 1; background: transparent; border: 1px solid #2aaa4a; color: #2aaa4a; font-family: inherit; font-size: 11px; letter-spacing: 2px; padding: 10px 6px; border-radius: 50px; cursor: pointer; }
     .ov-btns button:hover { background: rgba(42,170,74,0.15); }
     .ov-msg { font-size: 11px; letter-spacing: 1px; min-height: 16px; margin-top: 8px; text-align: center; color: #e8373c; }
+    /* ---- Advent calendar ---- */
+    .advent-banner { display: none; width: 100%; margin-bottom: 30px; padding: 18px 22px; border-radius: 16px; border: 2px solid #e8b923; background: linear-gradient(135deg, #8e1b1b, #145a32); color: #fff; font-family: inherit; text-align: left; cursor: pointer; align-items: center; gap: 16px; box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 8px 24px rgba(232,185,35,0.2); transition: transform 0.12s; }
+    .advent-banner.show { display: flex; }
+    .advent-banner:hover { transform: translateY(-2px); }
+    .advent-banner.pulse { animation: adventGlow 1.6s ease-in-out infinite; }
+    .advent-banner .ab-icon { font-size: 36px; }
+    .advent-banner .ab-title { font-size: 16px; font-weight: bold; letter-spacing: 3px; color: #ffdc00; }
+    .advent-banner .ab-sub { font-size: 12px; letter-spacing: 2px; margin-top: 4px; color: #f5e6c8; }
+    @keyframes adventGlow { 0%,100% { box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 0 8px rgba(232,185,35,0.3); } 50% { box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 0 28px rgba(232,185,35,0.9); } }
+    .advent-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 10px; }
+    .door { position: relative; aspect-ratio: 3 / 4; perspective: 700px; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; color: inherit; }
+    .door .behind { position: absolute; inset: 0; border-radius: 8px; overflow: hidden; background: #0d0d14 radial-gradient(circle at 50% 40%, #2a2a3a 0%, #0d0d14 70%); border: 2px solid #5a4a1a; display: flex; flex-direction: column; justify-content: flex-end; }
+    .door .behind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .door .behind .art-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+    .door .behind .label { position: relative; background: rgba(0,0,0,0.78); color: #ffdc00; font-size: 10px; letter-spacing: 1px; padding: 5px 4px; text-align: center; line-height: 1.3; }
+    .door .leaf { position: absolute; inset: 0; border-radius: 8px; transform-origin: left center; transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.3, 1); backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #e8b923; background: linear-gradient(145deg, #c0392b, #7d1717); box-shadow: inset 0 0 0 4px rgba(0,0,0,0.18), 0 4px 0 rgba(0,0,0,0.4); }
+    .door:nth-child(even) .leaf { background: linear-gradient(145deg, #1e8449, #0e4a28); }
+    .door .leaf .num { font-size: clamp(20px, 4vw, 34px); font-weight: bold; color: #ffdc00; text-shadow: 0 2px 0 rgba(0,0,0,0.5); }
+    .door .leaf::after { content: ''; position: absolute; right: 9px; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: #ffdc00; box-shadow: 0 0 0 2px rgba(0,0,0,0.3); }
+    .door.open .leaf { transform: rotateY(-118deg); }
+    .door.today:not(.open) .leaf { animation: adventGlow 1.6s ease-in-out infinite; }
+    .door.today:not(.open):hover .leaf { transform: rotateY(-14deg); }
+    .door.future .leaf { filter: saturate(0.35) brightness(0.55); }
+    .door.missed .leaf { filter: grayscale(1) brightness(0.4); }
+    .door.missed .leaf .num, .door.future .leaf .num { opacity: 0.7; }
+    .door .leaf .tag { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 9px; letter-spacing: 1px; color: #f5e6c8; }
+    .door:focus-visible { outline: 2px solid #ffdc00; outline-offset: 3px; }
+    .advent-msg { min-height: 20px; margin-top: 22px; text-align: center; font-size: 12px; letter-spacing: 2px; color: #e8a020; }
+    #advent-modal .online-modal-box { border-color: #e8b923; }
+    #advent-modal .online-modal-title { color: #ffdc00; }
+    #advent-art { width: 150px; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #e8b923; margin: 0 auto 14px; display: block; background: #111; }
+    #advent-art-fallback { width: 150px; height: 200px; border-radius: 8px; border: 2px solid #e8b923; margin: 0 auto 14px; display: none; align-items: center; justify-content: center; font-size: 48px; background: #111; }
+    #advent-game { font-size: 20px; font-weight: bold; color: #fff; letter-spacing: 2px; margin-bottom: 4px; }
+    #advent-sys { font-size: 11px; letter-spacing: 3px; margin-bottom: 12px; }
+    #advent-blurb { font-size: 13px; color: #bbb; letter-spacing: 1px; line-height: 1.6; margin-bottom: 14px; }
+    #advent-bonus { font-size: 13px; font-weight: bold; color: #2aaa4a; letter-spacing: 2px; margin-bottom: 16px; min-height: 18px; }
+    @media (max-width: 560px) { .advent-grid { grid-template-columns: repeat(3, 1fr); } .advent-banner .ab-icon { font-size: 28px; } }
     .site-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; text-align: center; padding: 14px; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 3px; color: #ffdc00; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
     .play-online-btn { position: fixed; top: 20px; right: 20px; z-index: 600; background: linear-gradient(135deg, #1a8a3a, #0f5a25); border: 2px solid #2aaa4a; color: #fff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 12px 24px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 20px rgba(42,170,74,0.3); transition: transform 0.12s, box-shadow 0.12s; }
     .play-online-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 25px rgba(42,170,74,0.4); }
@@ -118,6 +155,10 @@
   <div class="container fade-in">
     <div class="page-title">GAME ROOM</div>
     <div class="page-sub">SELECT YOUR SYSTEM</div>
+    <button type="button" class="advent-banner" id="advent-banner">
+      <span class="ab-icon">🎄</span>
+      <span><div class="ab-title" id="ab-title"></div><div class="ab-sub" id="ab-sub"></div></span>
+    </button>
     <div class="systems-grid">
 
       <div class="system-card" style="border:2px solid #e8373c44;" id="card-nes">
@@ -249,6 +290,19 @@
   </div>
 </div>
 
+<div id="advent" class="screen">
+  <div class="container fade-in">
+    <button type="button" class="btn-back" id="back-to-systems-from-advent">🕹️ ALL SYSTEMS</button>
+    <div class="library-header">
+      <div class="library-accent" style="background:#e8b923;"></div>
+      <div class="library-title" style="color:#ffdc00;">🎄 ADVENT CALENDAR</div>
+    </div>
+    <div class="library-sub" id="advent-sub"></div>
+    <div class="advent-grid" id="advent-grid"></div>
+    <div class="advent-msg" id="advent-msg"></div>
+  </div>
+</div>
+
 <div id="playing" class="screen">
   <div class="container fade-in">
     <button type="button" class="btn-back" id="back-to-library">🎮 BACK TO LIBRARY</button>
@@ -301,6 +355,22 @@
   </div>
 </div>
 
+<!-- Advent door modal -->
+<div class="online-modal" id="advent-modal">
+  <div class="online-modal-box">
+    <div class="online-modal-title" id="advent-modal-title"></div>
+    <div class="online-modal-sub" id="advent-modal-sub">GAME OF THE DAY</div>
+    <img id="advent-art" alt="">
+    <div id="advent-art-fallback">🎮</div>
+    <div id="advent-game"></div>
+    <div id="advent-sys"></div>
+    <div id="advent-blurb"></div>
+    <div id="advent-bonus"></div>
+    <button class="btn-primary" id="advent-play" style="margin-bottom:10px;">▶ PLAY NOW</button>
+    <button class="online-close" id="advent-close" style="margin-top:0;">CLOSE</button>
+  </div>
+</div>
+
 <!-- Online Modal -->
 <div class="online-modal" id="online-modal">
   <div class="online-modal-box">
@@ -342,7 +412,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v2.9 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v3.0 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 // localStorage can throw (private browsing, blocked site data) - never let that kill the page
@@ -365,7 +435,9 @@ function getTodayKey() {
 function getDayStamp() { return getTodayKey().slice('grTime_'.length); }
 
 // Parent override: extra time / no limit, for today only (keys include the date so they expire on their own)
-function getBonusSeconds() { return parseInt(lsGet('grBonus_' + getDayStamp())) || 0; }
+function getParentBonusSeconds() { return parseInt(lsGet('grBonus_' + getDayStamp())) || 0; }
+function getAdventBonusSeconds() { return parseInt(lsGet('grAdventBonus_' + getDayStamp())) || 0; }
+function getBonusSeconds() { return getParentBonusSeconds() + getAdventBonusSeconds(); }
 function isUnlimitedToday() { return lsGet('grUnlimited_' + getDayStamp()) === '1'; }
 function getLimitSeconds() { return DAILY_LIMIT_MINUTES * 60 + getBonusSeconds(); }
 function isOverLimit() { return !isUnlimitedToday() && getTimeUsedToday() >= getLimitSeconds(); }
@@ -845,6 +917,7 @@ function showScreen(id) {
   }
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+  if (id === 'systems') updateAdventBanner();
 }
 
 function handleLogin() {
@@ -985,7 +1058,7 @@ function sha256Hex(text) {
 
 function overrideStatusText() {
   if (isUnlimitedToday()) return 'NO LIMIT ACTIVE FOR TODAY';
-  var extra = getBonusSeconds() / 3600;
+  var extra = getParentBonusSeconds() / 3600;
   return extra > 0 ? '+' + extra + ' HOUR' + (extra > 1 ? 'S' : '') + ' ADDED TODAY' : '';
 }
 
@@ -1001,7 +1074,7 @@ function applyOverride(mode) {
   if (mode === 'unlimited') {
     lsSet('grUnlimited_' + getDayStamp(), '1');
   } else {
-    lsSet('grBonus_' + getDayStamp(), getBonusSeconds() + 3600);
+    lsSet('grBonus_' + getDayStamp(), getParentBonusSeconds() + 3600);
   }
   hideSaveWarning();
   document.getElementById('timesup-modal').classList.remove('active');
@@ -1149,6 +1222,269 @@ document.getElementById('online-close').onclick = function() { document.getEleme
 ['nes', 'snes', 'genesis', 'gameboy', 'gba', 'gbc', 'nds', 'gamegear', 'mame', 'n64'].forEach(function(id) {
   makeActivatable(document.getElementById('card-' + id), function() { openSystem(id); });
 });
+// ================= ADVENT CALENDAR =================
+// Wakes up on its own every December 1st, retires after January 1st, and reshuffles each year.
+// One door per day, only on its own day (no going back). Opening a door = +10 minutes for that day.
+var ADVENT_BONUS_SECONDS = 600;
+var ADVENT_DAYS = 25;
+
+// [system, title (must match GAMES), blurb, headliner?]  Headliners are saved for the last days.
+var ADVENT_POOL = [
+  ['snes', 'The Legend of Zelda - A Link to the Past', 'Save Hyrule across two worlds in one of the greatest adventures ever.', 1],
+  ['snes', 'Super Mario World', 'Ride Yoshi across Dinosaur Land and find every secret exit.', 1],
+  ['snes', 'Super Metroid', 'Explore the alien planet Zebes as Samus - a space adventure legend.', 1],
+  ['snes', 'Chrono Trigger', 'Travel through time to save the world in this all-time classic.', 1],
+  ['snes', 'Donkey Kong Country 2', 'Diddy and Dixie team up to rescue DK from the pirate Kremlings.', 1],
+  ['nes', 'Super Mario Bros 3', 'Raccoon tails, warp whistles and the best Mario of the 8-bit era.', 1],
+  ['n64', 'Legend of Zelda - Ocarina of Time', 'Link grows up and saves Hyrule with the magic ocarina.', 1],
+  ['n64', 'Super Mario 64', 'Mario leaps into 3D for the first time. Collect all the stars!', 1],
+  ['n64', 'Mario Kart 64', 'Banana peels, blue shells and four-player racing chaos.', 1],
+  ['n64', 'Super Smash Bros', 'Nintendo all-stars brawl it out. Grab a friend!', 1],
+  ['genesis', 'Sonic The Hedgehog 2', 'Sonic and Tails spin-dash through the fastest levels around.', 1],
+  ['gbc', 'Legend of Zelda - Links Awakening DX', 'Wake the Wind Fish on Koholint Island - now in color.', 1],
+  ['gbc', 'Pokemon Crystal', 'Catch, train and battle your way across Johto.', 1],
+  ['gba', 'Legend of Zelda - The Minish Cap', 'Shrink down with a talking hat and save Hyrule.', 1],
+  ['nds', 'New Super Mario Bros', 'Mario returns to 2D with mega mushrooms and mini jumps.', 1],
+  ['nds', 'Mario Kart DS', 'Race on classic tracks with snaking and mission mode fun.'],
+  ['snes', 'Super Mario Kart', 'The original kart racer that started it all.'],
+  ['snes', 'Super Mario World 2 - Yoshs Island', 'Carry Baby Mario through a hand-drawn storybook world.'],
+  ['snes', 'Donkey Kong Country', 'Jungle platforming with awesome music and barrel blasts.'],
+  ['snes', 'Super Mario All-Stars', 'Four classic Mario adventures in one cartridge.'],
+  ['snes', 'F-Zero', 'Blast around futuristic tracks at crazy speed.'],
+  ['snes', 'Mega Man X', 'Mega Man gets faster with wall-climbing and dashing.'],
+  ['snes', 'Contra III - The Alien Wars', 'Run-and-gun action. Best with a friend!'],
+  ['snes', 'Teenage Mutant Ninja Turtles IV - Turtles in Time', 'The Turtles bash Shredder through time. Cowabunga!'],
+  ['snes', 'Super Punch-Out!!', 'Box your way to the title, one quirky fighter at a time.'],
+  ['nes', 'Legend of Zelda', 'The original quest that started it all.'],
+  ['nes', 'Super Mario Bros', 'Where it all began: eight worlds of plumber adventure.'],
+  ['nes', "Kirby's Adventure", 'Copy enemy powers and puff your way across Dream Land.'],
+  ['nes', 'Mega Man 2', 'The fan-favorite Blue Bomber classic.'],
+  ['nes', 'Mike Tysons Punch-Out!!', 'Dodge, counter and knock out the champions.'],
+  ['nes', 'Duck Tales', "Scrooge McDuck pogo-jumps around the world for treasure."],
+  ['nes', 'Tetris', 'Stack the blocks and clear the lines!'],
+  ['n64', 'Legend of Zelda - Majoras Mask', 'Three days to save Termina before the moon falls.'],
+  ['n64', 'Diddy Kong Racing', 'Race planes, cars and hovercraft in an adventure with friends.'],
+  ['n64', 'Star Fox 64', 'Barrel roll! Fly an Arwing and defend the galaxy.'],
+  ['genesis', 'Sonic The Hedgehog', 'The blue blur that took on Mario. Collect those rings!'],
+  ['genesis', 'Sonic The Hedgehog 3', 'Sonic and Tails face Knuckles on a floating island.'],
+  ['genesis', 'Streets of Rage 2', 'Classic beat-em-up action with an amazing soundtrack.'],
+  ['gbc', 'Legend of Zelda - Oracle of Seasons', 'Change the seasons to save the land of Holodrum.'],
+  ['gbc', 'Wario Land 3', 'Wario explores a magic music box for treasure.'],
+  ['gbc', 'Tetris DX', 'The block-dropping classic with a color upgrade.'],
+  ['gbc', 'Super Mario Bros Deluxe', 'The original Mario with extra challenges, in color.'],
+  ['gameboy', 'Legend of Zelda - Links Awakening', 'A mysterious island adventure that fits in your pocket.'],
+  ['gameboy', 'Super Mario Land 2 - 6 Golden Coins', 'Mario takes on Wario to win back his castle.'],
+  ['gameboy', 'Wario Land - Super Mario Land 3', 'Wario smashes his way into his own adventure.'],
+  ['gameboy', 'Dr. Mario', 'Match the pills to wipe out the viruses.'],
+  ['gba', 'Super Mario Advance 4 - Super Mario Bros 3', 'The legendary Mario 3, now portable.'],
+  ['gba', 'Mario Kart - Super Circuit', 'Mario Kart on the go, with every classic SNES track.'],
+  ['gba', 'Metroid - Zero Mission', 'Samus returns to Zebes in this modern take on the original.'],
+  ['gba', 'Mario & Luigi - Superstar Saga', 'The bros team up in a funny, turn-based adventure.'],
+  ['gba', 'Wario Land 4', 'Wario hunts for treasure in a wild, colorful pyramid.'],
+  ['gba', 'Sonic Advance', 'Sonic zips onto the Game Boy Advance.'],
+  ['gba', 'Super Mario Advance 2 - Super Mario World', 'Mario and Luigi take on Dinosaur Land in your hands.'],
+  ['nds', 'Legend of Zelda - Phantom Hourglass', 'Sail the seas and use the touch screen to save Linebeck.'],
+  ['nds', 'Super Mario 64 DS', 'Yoshi, Luigi and Wario join the star hunt.'],
+  ['nds', 'Mario & Luigi - Bowsers Inside Story', 'Explore inside Bowser! Funny and full of surprises.'],
+  ['mame', 'Galaga', 'Blast the alien swarm in an arcade legend.'],
+  ['mame', 'Pac-Man', 'Gobble dots and dodge ghosts in the arcade original.'],
+  ['mame', 'Donkey Kong', 'Climb the girders and rescue the lady from the big ape.'],
+  ['mame', 'Ms. Pac-Man', 'Pac-Man gets a bow, new mazes and smarter ghosts.'],
+  ['mame', 'Space Invaders', 'The arcade shooter that started a craze.'],
+  ['mame', 'Joust', 'Flap, lance and knock rivals off their buzzards.'],
+  ['mame', 'Dig Dug', 'Tunnel under the ground and pop the monsters.'],
+  ['gamegear', 'Ristar', 'A stretchy star hero swings through colorful worlds.']
+];
+
+function findAdventGame(sys, title) {
+  var list = GAMES[sys] || [];
+  for (var i = 0; i < list.length; i++) if (list[i].title === title) return list[i];
+  return null;
+}
+
+function mulberry32(seed) {
+  return function() {
+    seed = (seed + 0x6D2B79F5) | 0;
+    var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function seededShuffle(arr, rng) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(rng() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+// 25 games for a given year: same order every time that year, different from other years.
+// Two headliners are saved for Dec 24 and 25; no two days in a row from the same system.
+function adventGamesForYear(year) {
+  var entries = ADVENT_POOL.filter(function(e) { return findAdventGame(e[0], e[1]); });
+  var best = null;
+  // Deterministic: try seeds in order until no two neighbouring days share a system
+  for (var attempt = 0; attempt < 200; attempt++) {
+    var rng = mulberry32(year * 7919 + 13 + attempt * 104729);
+    var heads = seededShuffle(entries.filter(function(e) { return e[3]; }), rng);
+    var rest = seededShuffle(entries.filter(function(e) { return !e[3]; }).concat(heads.slice(2)), rng);
+    var days = rest.slice(0, ADVENT_DAYS - 2).concat([heads[0], heads[1]]);
+    best = days;
+    var clash = false;
+    for (var i = 1; i < days.length; i++) if (days[i][0] === days[i - 1][0]) { clash = true; break; }
+    if (!clash) break;
+  }
+  return best;
+}
+
+// Which calendar (if any) is showing right now?  December -> that year. Jan 1 -> still last year's. Otherwise dormant.
+function adventStatus() {
+  var now = new Date();
+  var m = now.getMonth(), d = now.getDate(), y = now.getFullYear();
+  if (m === 11) return { active: true, year: y, day: d };
+  if (m === 0 && d === 1) return { active: true, year: y - 1, day: 32 };
+  return { active: false };
+}
+
+function adventOpenedDays(year) {
+  try { var v = JSON.parse(lsGet('grAdvent_' + year) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+}
+
+function adventPlaceholderFix(img, fb) {
+  img.onerror = function() { img.style.display = 'none'; fb.style.display = 'flex'; };
+}
+
+function updateAdventBanner() {
+  var st = adventStatus();
+  var banner = document.getElementById('advent-banner');
+  if (!st.active) { banner.classList.remove('show', 'pulse'); return; }
+  var title = document.getElementById('ab-title');
+  var sub = document.getElementById('ab-sub');
+  var opened = adventOpenedDays(st.year);
+  banner.classList.add('show');
+  if (st.day <= ADVENT_DAYS && opened.indexOf(st.day) === -1) {
+    banner.classList.add('pulse');
+    title.textContent = 'ADVENT CALENDAR - DAY ' + st.day;
+    sub.textContent = "OPEN TODAY'S DOOR FOR A FREE GAME + 10 MINUTES!";
+  } else if (st.day <= ADVENT_DAYS) {
+    banner.classList.remove('pulse');
+    var g = adventGamesForYear(st.year)[st.day - 1];
+    title.textContent = "TODAY'S GAME: " + g[1].toUpperCase();
+    sub.textContent = 'TAP TO PLAY IT. COME BACK TOMORROW FOR A NEW DOOR!';
+  } else {
+    banner.classList.remove('pulse');
+    title.textContent = 'MERRY CHRISTMAS FROM THE GAME ROOM!';
+    sub.textContent = 'SEE YOU NEXT DECEMBER 1ST FOR A NEW CALENDAR';
+  }
+}
+
+function showAdventModal(day, justOpened) {
+  var st = adventStatus();
+  var g = adventGamesForYear(st.year)[day - 1];
+  var game = findAdventGame(g[0], g[1]);
+  var isToday = day === st.day;
+  var art = document.getElementById('advent-art');
+  var fb = document.getElementById('advent-art-fallback');
+  art.style.display = 'block'; fb.style.display = 'none';
+  adventPlaceholderFix(art, fb);
+  art.src = game.thumb;
+  document.getElementById('advent-modal-title').textContent = 'DOOR ' + day;
+  document.getElementById('advent-modal-sub').textContent = isToday ? 'GAME OF THE DAY' : 'THAT DAY\'S GAME';
+  document.getElementById('advent-game').textContent = g[1];
+  var sys = SYSTEMS[g[0]];
+  document.getElementById('advent-sys').textContent = sys.label;
+  document.getElementById('advent-sys').style.color = sys.color;
+  document.getElementById('advent-blurb').textContent = g[2];
+  document.getElementById('advent-bonus').textContent = justOpened ? '+10 MINUTES ADDED TO TODAY!' : (isToday ? '+10 MINUTES ADDED TODAY' : '');
+  var play = document.getElementById('advent-play');
+  play.style.display = isToday ? 'block' : 'none';
+  play.onclick = function() {
+    document.getElementById('advent-modal').classList.remove('active');
+    currentSystem = g[0];
+    openGame(game);
+  };
+  document.getElementById('advent-modal').classList.add('active');
+}
+
+function openAdventDoor(day) {
+  var st = adventStatus();
+  var msg = document.getElementById('advent-msg');
+  if (!st.active) return;
+  var opened = adventOpenedDays(st.year);
+  var isOpen = opened.indexOf(day) !== -1;
+  if (isOpen) { showAdventModal(day, false); return; }
+  if (day > st.day) { msg.textContent = 'NOT YET! THIS DOOR OPENS ON DECEMBER ' + day + '.'; return; }
+  if (day < st.day || st.day > ADVENT_DAYS) { msg.textContent = 'THIS DOOR HAS CLOSED FOR GOOD - DOORS ONLY OPEN ON THEIR OWN DAY.'; return; }
+  // today's door: open it, record it, pay out the bonus once
+  opened.push(day);
+  lsSet('grAdvent_' + st.year, JSON.stringify(opened));
+  lsSet('grAdventBonus_' + getDayStamp(), getAdventBonusSeconds() + ADVENT_BONUS_SECONDS);
+  msg.textContent = '';
+  renderAdvent(day);
+  setTimeout(function() { showAdventModal(day, true); }, 1000);
+}
+
+function renderAdvent(animateDay) {
+  var st = adventStatus();
+  var grid = document.getElementById('advent-grid');
+  grid.innerHTML = '';
+  if (!st.active) return;
+  var games = adventGamesForYear(st.year);
+  var opened = adventOpenedDays(st.year);
+  var sub = document.getElementById('advent-sub');
+  sub.textContent = st.day <= ADVENT_DAYS ? 'DECEMBER ' + st.year + ' - ONE DOOR EACH DAY, +10 MINUTES OF PLAY TIME' : 'SEE YOU NEXT DECEMBER!';
+  for (var d = 1; d <= ADVENT_DAYS; d++) {
+    var g = games[d - 1];
+    var game = findAdventGame(g[0], g[1]);
+    var isOpen = opened.indexOf(d) !== -1;
+    var state = d === st.day ? 'today' : (d > st.day ? 'future' : 'missed');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'door ' + state;
+    btn.setAttribute('aria-label', 'Door ' + d);
+    var behind = document.createElement('div');
+    behind.className = 'behind';
+    if (isOpen) {
+      var img = document.createElement('img');
+      var fb = document.createElement('div');
+      fb.className = 'art-fallback'; fb.style.display = 'none'; fb.textContent = '🎮';
+      img.alt = ''; img.src = game.thumb;
+      adventPlaceholderFix(img, fb);
+      var label = document.createElement('div');
+      label.className = 'label'; label.textContent = g[1];
+      behind.appendChild(fb); behind.appendChild(img); behind.appendChild(label);
+    }
+    var leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    var num = document.createElement('span');
+    num.className = 'num'; num.textContent = d;
+    leaf.appendChild(num);
+    if (state === 'missed' && !isOpen) {
+      var tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'MISSED'; leaf.appendChild(tag);
+    }
+    btn.appendChild(behind);
+    btn.appendChild(leaf);
+    if (isOpen && d !== animateDay) btn.classList.add('open');
+    (function(day) { btn.onclick = function() { openAdventDoor(day); }; })(d);
+    grid.appendChild(btn);
+    if (d === animateDay) {
+      (function(b) { requestAnimationFrame(function() { requestAnimationFrame(function() { b.classList.add('open'); }); }); })(btn);
+    }
+  }
+}
+
+document.getElementById('advent-banner').onclick = function() {
+  document.getElementById('advent-msg').textContent = '';
+  renderAdvent();
+  showScreen('advent');
+};
+document.getElementById('back-to-systems-from-advent').onclick = function() { showScreen('systems'); };
+document.getElementById('advent-close').onclick = function() { document.getElementById('advent-modal').classList.remove('active'); };
+updateAdventBanner();
+// =================================================
+
 var sysList = Object.keys(GAMES);
 for (var s = 0; s < sysList.length; s++) {
   var el = document.getElementById('count-' + sysList[s]);
