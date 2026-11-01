@@ -339,10 +339,20 @@
         <div class="sys-count" id="count-n64"></div>
       </div>
 
+      <div class="system-card" style="border:2px solid #00c2a844;" id="card-lab">
+        <div class="top-bar" style="background:#00c2a8;"></div>
+        <div class="icon-wrap float" style="animation-delay:0.9s">
+          <div style="font-size:64px;line-height:1;filter:drop-shadow(0 0 6px rgba(0,194,168,0.6));">&#129514;</div>
+        </div>
+        <div class="sys-label" style="color:#00c2a8;">THE LAB</div>
+        <div class="sys-count" id="count-lab"></div>
+      </div>
+
     </div>
   </div>
 </div>
 
+<input type="file" id="lab-file" style="display:none" onchange="labFilePicked(this)">
 <div id="library" class="screen">
   <div class="container fade-in">
     <button type="button" class="btn-back" id="back-to-systems">🕹️ ALL SYSTEMS</button>
@@ -494,7 +504,7 @@
   </div>
 </div>
 
-<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v3.3 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
+<div class="site-footer">⬡ PETERS FAMILY GAME ROOM &nbsp;|&nbsp; FOUNDED MAY 2026 &nbsp;|&nbsp; v3.4 &nbsp;|&nbsp; ALL SYSTEMS OPERATIONAL ⬡</div>
 
 <script>
 // localStorage can throw (private browsing, blocked site data) - never let that kill the page
@@ -671,7 +681,8 @@ var SYSTEMS = {
   gbc:     { label: "GAME BOY COLOR", color: "#2a7a2a" },
   mame:    { label: "MAME ARCADE",    color: "#ff6600" },
   gamegear:{ label: "GAME GEAR",      color: "#1a9be8" },
-  nds:     { label: "NINTENDO DS",    color: "#cc2200" }
+  nds:     { label: "NINTENDO DS",    color: "#cc2200" },
+  lab:     { label: "THE LAB",        color: "#00c2a8" }
 };
 
 var EMU_CORES = {
@@ -684,10 +695,17 @@ var EMU_CORES = {
   gbc:     "gambatte",
   mame:    "mame2003_plus",
   gamegear:"segaGG",
-  nds:     "nds"
+  nds:     "nds",
+  lab:     "nes"      // each Lab game says which core it needs (game.core); this is just the fallback
 };
 
 var GAMES = {
+  // THE LAB: hacks, homebrew and test builds. Each entry may set core (emulator), note and version.
+  lab: [
+    { title: "Zelda - The Family Triforce", file: "Zelda - The Family Triforce.zip", core: "nes", version: "v0.9 (work in progress)",
+      note: "Our own Zelda quest: collect 8 Triforce shards, visit Jocelyn, Grandpa Mike, Dr. Gregory and Grandma Diane.",
+      thumb: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="84" height="110"><rect width="84" height="110" fill="#0b1a14"/><polygon points="42,22 62,58 22,58" fill="#f5c518"/><polygon points="22,58 42,94 2,94" fill="#f5c518"/><polygon points="62,58 82,94 42,94" fill="#f5c518"/><polygon points="42,58 52,76 32,76" fill="#0b1a14"/></svg>') }
+  ],
   gbc: [
     { title: "Mega Man Xtreme", file: "Mega Man Xtreme (USA, Europe) (GB Compatible).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mega%20Man%20Xtreme%20(USA%2C%20Europe)%20(GB%20Compatible).png" },
     { title: "Mega Man Xtreme 2", file: "Mega Man Xtreme 2 (USA, Europe).zip", thumb: "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Color/Named_Boxarts/Mega%20Man%20Xtreme%202%20(USA%2C%20Europe).png" },
@@ -1044,7 +1062,7 @@ function openSystem(sysId) {
   document.getElementById('library-accent').style.background = sys.color;
   document.getElementById('library-title').textContent = sys.label;
   document.getElementById('library-title').style.color = sys.color;
-  document.getElementById('library-sub').textContent = games.length + ' GAMES - ALPHABETICAL';
+  document.getElementById('library-sub').textContent = games.length + (sysId === 'lab' ? ' EXPERIMENTS - HACKS, HOMEBREW AND TEST BUILDS' : ' GAMES - ALPHABETICAL');
   var list = document.getElementById('game-list');
   list.innerHTML = '';
   for (var i = 0; i < games.length; i++) {
@@ -1067,6 +1085,12 @@ function openSystem(sysId) {
     var name = document.createElement('span');
     name.className = 'game-name';
     name.textContent = game.title;
+    if (game.note) {
+      var note = document.createElement('span');
+      note.style.cssText = 'display:block;font-size:10px;color:#888;letter-spacing:1px;margin-top:6px;line-height:1.5;font-weight:normal;';
+      note.textContent = (game.version ? game.version + ' - ' : '') + game.note;
+      name.appendChild(note);
+    }
 
     row.appendChild(thumb);
     row.appendChild(placeholder);
@@ -1074,7 +1098,25 @@ function openSystem(sysId) {
     makeActivatable(row, (function(g) { return function() { openGame(g); }; })(game));
     list.appendChild(row);
   }
+  if (sysId === 'lab') {
+    var btn = document.createElement('div');
+    btn.className = 'game-row';
+    btn.innerHTML = '<div class="game-thumb-placeholder">&#128193;</div><span class="game-name">LOAD A ROM FROM MY COMPUTER<span style="display:block;font-size:10px;color:#888;letter-spacing:1px;margin-top:6px;font-weight:normal;">For testing. NES, SNES, Genesis, Game Boy, GBC, GBA. The file stays on this computer.</span></span>';
+    makeActivatable(btn, function() { document.getElementById('lab-file').click(); });
+    list.appendChild(btn);
+  }
   showScreen('library');
+}
+
+var LAB_CORES = { nes: 'nes', fds: 'nes', sfc: 'snes', smc: 'snes', md: 'segaMD', gen: 'segaMD', bin: 'segaMD', gb: 'gb', gbc: 'gambatte', gba: 'gba' };
+function labFilePicked(input) {
+  var f = input.files && input.files[0];
+  if (!f) return;
+  var ext = (f.name.split('.').pop() || '').toLowerCase();
+  var core = LAB_CORES[ext];
+  if (!core) { alert('Pick a .nes, .sfc/.smc, .md/.gen, .gb, .gbc or .gba file (not zipped).'); input.value = ''; return; }
+  openGame({ title: f.name.replace(/\.[^.]+$/, ''), core: core, url: URL.createObjectURL(f) });
+  input.value = '';
 }
 
 function openGame(game) {
@@ -1103,8 +1145,8 @@ function openGame(game) {
   window.EJS_emulator = undefined;
   window.EJS_player    = '#emulator-container';
   window.EJS_gameName  = game.title;
-  window.EJS_core      = EMU_CORES[currentSystem];
-  window.EJS_gameUrl   = 'roms/' + currentSystem + '/' + game.file;
+  window.EJS_core      = game.core || EMU_CORES[currentSystem];
+  window.EJS_gameUrl   = game.url || ('roms/' + currentSystem + '/' + game.file);
   window.EJS_pathtodata = 'https://cdn.emulatorjs.org/4.2.3/data/';
   window.EJS_startOnLoaded = true;
 
@@ -1302,7 +1344,7 @@ document.getElementById('back-to-systems-from-playing').onclick = function() {
 document.getElementById('play-online-btn').onclick = function() { document.getElementById('online-modal').classList.add('active'); };
 document.getElementById('online-close').onclick = function() { document.getElementById('online-modal').classList.remove('active'); };
 
-['nes', 'snes', 'genesis', 'gameboy', 'gba', 'gbc', 'nds', 'gamegear', 'mame', 'n64'].forEach(function(id) {
+['nes', 'snes', 'genesis', 'gameboy', 'gba', 'gbc', 'nds', 'gamegear', 'mame', 'n64', 'lab'].forEach(function(id) {
   makeActivatable(document.getElementById('card-' + id), function() { openSystem(id); });
 });
 // ================= ADVENT CALENDAR =================
@@ -1876,7 +1918,7 @@ applySeason();
 var sysList = Object.keys(GAMES);
 for (var s = 0; s < sysList.length; s++) {
   var el = document.getElementById('count-' + sysList[s]);
-  if (el) el.textContent = GAMES[sysList[s]].length + ' GAMES';
+  if (el) el.textContent = GAMES[sysList[s]].length + (sysList[s] === 'lab' ? ' EXPERIMENTS' : ' GAMES');
 }
 </script>
 </body>
