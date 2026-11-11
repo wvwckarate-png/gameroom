@@ -159,3 +159,6 @@ body[data-screen="playing"] #gr-season { display: none; }
 #gr-now .playing-title { flex: 0 1 auto; min-width: 80px; }
 #gr-now .playing-system, #gr-now #session-timer { flex: 0 0 auto; }
 @media (max-width: 640px) { #gr-time { display: none; } #gr-logo { font-size: 10px; } #gr-search-wrap { min-width: 0; } }
+
+.crt-brand { white-space: nowrap; }
+@media (max-width: 1100px) { .crt-grille { display: none; } .crt-panel { justify-content: center; } }

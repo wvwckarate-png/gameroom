@@ -307,6 +307,7 @@ function pauseEmu() { try { if (emuRunning()) emu().pause(); } catch (e) {} }
 window.EJS_onSaveState = function() { saveTo('quick'); };
 window.EJS_onLoadState = function() {
   if (!cur) return;
+  if (!saveIndex()[cur.key]) { pickSaveFile(); return; }        // nothing saved here yet: offer a save file from the computer
   savesFor(cur.key).then(function(list) { var n = newest(list); if (n) loadRec(n); else toast('NO SAVE FOR THIS GAME YET'); });
 };
 window.EJS_onGameStart = function() {
@@ -314,6 +315,14 @@ window.EJS_onGameStart = function() {
   if (!cur) return;
   var key = cur.key;
   savesFor(key).then(function(list) {
+    if (list.length) return list;
+    // nothing in Game Room's slots: look for a state the old site kept inside the browser and adopt it
+    var e = emu();
+    return Promise.resolve().then(function() { return e.storage.states.get(e.getBaseFileName() + '.state'); }).then(function(old) {
+      if (!old || !old.length || !cur || cur.key !== key) return list;
+      return writeSave('1', new Uint8Array(old), '').then(function(rec) { return [rec]; });
+    }).catch(function() { return list; });
+  }).then(function(list) {
     var n = newest(list);
     if (!n || !cur || cur.key !== key || !onPlaying()) return;
     pauseEmu();
@@ -330,8 +339,8 @@ var resumeModal = modal('resume-modal', '<h2>WELCOME BACK!</h2><p>You have a sav
 $('resume-no').onclick = function() { resumeModal.classList.remove('active'); resumeEmu(); };
 
 var savesModal = modal('saves-modal', '<h2>SAVES</h2><p id="saves-game"></p><div id="saves-list"></div>' +
-  '<div class="gr-actions"><button type="button" class="gr-btn ghost small" id="saves-import">LOAD FROM A FILE</button><button type="button" class="gr-btn" id="saves-close">BACK TO THE GAME</button></div>' +
-  '<p style="margin:14px 0 0;font-size:12px;">Saves live in this browser on this computer. Use the &#11015; button to copy one to a file for another computer.</p>' +
+  '<div class="gr-actions"><button type="button" class="gr-btn ghost small" id="saves-import">&#128193; LOAD A SAVE FILE</button><button type="button" class="gr-btn ghost small" id="saves-export">&#11015; SAVE TO A FILE</button><button type="button" class="gr-btn" id="saves-close">BACK TO THE GAME</button></div>' +
+  '<p style="margin:14px 0 0;font-size:12px;">Saves live in this browser on this computer. <b>LOAD A SAVE FILE</b> opens a .state file from your Downloads (old saves work too) and keeps a copy in an empty slot. <b>SAVE TO A FILE</b> downloads where you are right now.</p>' +
   '<input type="file" id="saves-file" style="display:none">');
 function renderSaves() {
   if (!cur) return;
@@ -379,15 +388,46 @@ function openSaves() {
   (emuRunning() && !emu().paused ? grabShot() : Promise.resolve('')).then(function(shot) { panelShot = shot; pauseEmu(); renderSaves(); savesModal.classList.add('active'); });
 }
 $('saves-close').onclick = function() { savesModal.classList.remove('active'); resumeEmu(); };
-$('saves-import').onclick = function() { $('saves-file').click(); };
-$('saves-file').onchange = function() {
-  var f = this.files && this.files[0]; this.value = '';
-  if (!f || !emuRunning()) return;
+// save files on the computer (.state): the old site downloaded these, and they still load
+function pickSaveFile() { if (!cur || !emuRunning()) { toast('START A GAME FIRST'); return; } $('saves-file').click(); }
+function loadSaveFile(f) {
+  if (!f || !cur || !emuRunning()) return;
+  var key = cur.key;
   f.arrayBuffer().then(function(buf) {
-    savesModal.classList.remove('active'); resumeEmu();
-    setTimeout(function() { if (loadRec({ state: new Uint8Array(buf), at: Date.now() })) saveTo('quick', true); }, 200);
+    savesModal.classList.remove('active'); resumeModal.classList.remove('active'); resumeEmu();
+    setTimeout(function() {
+      if (!cur || cur.key !== key) return;
+      try { emu().gameManager.loadState(new Uint8Array(buf)); } catch (e) { toast('THAT FILE IS NOT A SAVE FOR THIS GAME'); return; }
+      toast('LOADED ' + f.name.toUpperCase());
+      setTimeout(function() {          // keep a copy in the first empty slot so it is there next time
+        savesFor(key).then(function(list) {
+          var used = {}; list.forEach(function(r) { used[r.slot] = 1; });
+          var slot = !used['1'] ? '1' : !used['2'] ? '2' : !used['3'] ? '3' : 'auto';
+          return saveTo(slot, true);
+        });
+      }, 700);
+    }, 250);
   });
+}
+$('saves-import').onclick = pickSaveFile;
+$('saves-file').onchange = function() { var f = this.files && this.files[0]; this.value = ''; loadSaveFile(f); };
+$('saves-export').onclick = function() {
+  if (!cur || !emuRunning()) return;
+  try {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([new Uint8Array(emu().gameManager.getState())]));
+    a.download = cur.title.replace(/[^\w\- ]+/g, '') + '.state'; a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 2000);
+    toast('SAVE FILE DOWNLOADED');
+  } catch (e) { toast('COULD NOT SAVE'); }
 };
+// dropping a .state file on the page while a game is on loads it
+document.addEventListener('dragover', function(e) { if (onPlaying()) e.preventDefault(); });
+document.addEventListener('drop', function(e) {
+  if (!onPlaying()) return;
+  e.preventDefault();
+  var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) loadSaveFile(f);
+});
 
 // buttons on the TV's front panel
 var panel = document.querySelector('.crt-panel');
@@ -397,6 +437,8 @@ if (panel) {
   var brand = panel.querySelector('.crt-brand');
   panel.insertBefore(bSaves, brand.nextSibling);
   panel.insertBefore(bSave, bSaves);
+  var bFile = el('button', 'crt-btn', '&#128193; LOAD FILE'); bFile.type = 'button'; bFile.title = 'Load a .state save file from this computer'; bFile.onclick = pickSaveFile;
+  panel.insertBefore(bFile, bSaves.nextSibling);
 }
 
 // auto save: when leaving, when time runs out, when the tab is hidden, and every few minutes for small states
