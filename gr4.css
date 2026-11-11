@@ -1,0 +1,161 @@
+/* Game Room v4 skin: header bar, cover shelves, favorites/recent, saves and controller panels, site-wide season effects.
+   Loaded after the inline styles in index.html, so rules here win. */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root { --gold: #ffdc00; --ink: #0a0a0f; --panel: #12121b; --line: #2a2a38; --dim: #9a9aa8; --season: #ffdc00; --head: 60px; }
+
+body { background: radial-gradient(1200px 700px at 50% -10%, #17172a 0%, #0a0a0f 60%) fixed, #0a0a0f; }
+body::before { opacity: 0.45; }                       /* scanlines: softer, so box art stays clean */
+.pix { font-family: 'Press Start 2P', 'Courier New', monospace; }
+
+/* ---------- season effects canvas (behind everything) ---------- */
+#season-fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+body[data-screen="playing"] #season-fx { opacity: 0.45; }
+
+/* ---------- header ---------- */
+#gr-header { display: none; position: fixed; top: 0; left: 0; right: 0; height: var(--head); z-index: 600; align-items: center; gap: 14px; padding: 0 18px;
+  background: linear-gradient(#14141f, #0d0d15); border-bottom: 2px solid var(--line); box-shadow: 0 2px 0 var(--season), 0 8px 24px rgba(0,0,0,0.55); }
+body.in #gr-header { display: flex; }
+body.in .screen { padding-top: calc(var(--head) + 30px); }
+#gr-logo { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 15px; color: var(--gold); letter-spacing: 1px; cursor: pointer; white-space: nowrap; text-shadow: 0 0 12px rgba(255,220,0,0.45); background: none; border: none; padding: 8px 4px; }
+#gr-season { font-size: 11px; letter-spacing: 2px; color: var(--season); white-space: nowrap; }
+#gr-search-wrap { flex: 1; max-width: 460px; margin-left: auto; position: relative; }
+#gr-search { width: 100%; background: #08080d; border: 2px solid var(--line); border-radius: 50px; color: #fff; font-family: inherit; font-size: 14px; letter-spacing: 1px; padding: 9px 16px 9px 38px; }
+#gr-search:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,220,0,0.15); }
+#gr-search-wrap::before { content: '\1F50D'; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.7; pointer-events: none; }
+.gr-pill { display: inline-flex; align-items: center; gap: 8px; background: #08080d; border: 2px solid var(--line); color: #ddd; font-family: inherit; font-size: 12px; letter-spacing: 1.5px; padding: 8px 14px; border-radius: 50px; white-space: nowrap; cursor: pointer; }
+button.gr-pill:hover { border-color: var(--gold); color: var(--gold); }
+#gr-time { cursor: default; }
+#gr-time b { color: var(--gold); font-weight: bold; }
+#gr-time.warn b { color: #ff9a3c; } #gr-time.out b { color: #ff5a5f; }
+#gr-pad .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
+#gr-pad.on .dot { background: #3ddc6a; box-shadow: 0 0 8px #3ddc6a; }
+#gr-header .play-online-btn { position: static; padding: 9px 16px; font-size: 11px; box-shadow: 0 3px 0 rgba(0,0,0,0.4); }
+body:not(.in) .play-online-btn { display: none; }
+@media (max-width: 900px) { #gr-season, #gr-time span { display: none; } #gr-logo { font-size: 12px; } }
+@media (max-width: 640px) { #gr-header { gap: 8px; padding: 0 10px; } #gr-pad span, #gr-header .play-online-btn { display: none; } }
+
+/* ---------- footer: part of the page, no longer floating over things ---------- */
+.site-footer { position: relative; z-index: 1; background: none; padding: 26px 14px 22px; font-size: 11px; letter-spacing: 3px; color: #8d7f2c; }
+.screen { min-height: calc(100vh - 70px); padding-bottom: 30px; }
+
+/* ---------- headings and small text: bigger, brighter ---------- */
+.page-title { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: clamp(16px, 2.4vw, 24px); letter-spacing: 1px; }
+.page-sub, .library-sub { color: var(--dim); font-size: 12px; letter-spacing: 3px; }
+.page-sub { margin-bottom: 26px; }
+.sys-count { font-size: 11px; color: var(--dim); letter-spacing: 1.5px; margin-top: 6px; }
+.sys-coming { font-size: 11px; }
+.library-title { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: clamp(15px, 2.2vw, 22px); letter-spacing: 1px; }
+.shelf-title { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 12px; color: var(--gold); letter-spacing: 1px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+.shelf-title small { font-family: 'Courier New', monospace; font-size: 11px; color: var(--dim); letter-spacing: 2px; }
+#systems .container { max-width: 1100px; }
+.systems-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+.system-card { border-radius: 18px; }
+@media (max-width: 640px) { .systems-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .system-card { padding: 16px 10px 14px; } .icon-wrap { height: 74px; } .sys-label { font-size: 12px; letter-spacing: 1px; } }
+
+/* ---------- shelves on the home screen (continue playing, favorites) ---------- */
+.shelf { margin-bottom: 34px; }
+.shelf-row { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-width: thin; scrollbar-color: #333 transparent; }
+.shelf-row .cover-card { flex: 0 0 132px; }
+
+/* ---------- cover cards ---------- */
+.game-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px 16px; }
+.game-list.rows { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+.cover-card { position: relative; cursor: pointer; border-radius: 12px; transition: transform 0.12s; animation: fadeIn 0.3s ease both; }
+.cover-card:hover, .cover-card:focus-visible { transform: translateY(-4px); outline: none; }
+.cover-art { position: relative; aspect-ratio: 3 / 4; border-radius: 10px; overflow: hidden; background: #0d0d14; border: 2px solid var(--line); box-shadow: 0 6px 0 rgba(0,0,0,0.45), 0 10px 22px rgba(0,0,0,0.4); }
+.cover-card:hover .cover-art, .cover-card:focus-visible .cover-art { border-color: var(--sys, var(--gold)); box-shadow: 0 6px 0 rgba(0,0,0,0.45), 0 0 22px color-mix(in srgb, var(--sys, #ffdc00) 55%, transparent); }
+.cover-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.cover-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 10px; text-align: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--sys, #ffdc00) 38%, #0d0d14), #0d0d14 75%); }
+.cover-fallback i { font-style: normal; font-size: 30px; }
+.cover-fallback b { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 9px; line-height: 1.7; color: #fff; overflow-wrap: anywhere; }
+.cover-name { margin-top: 9px; font-size: 13px; line-height: 1.35; letter-spacing: 0.5px; color: #e6e6ee; overflow-wrap: anywhere; }
+.cover-sys { display: block; margin-top: 3px; font-size: 10px; letter-spacing: 2px; color: var(--sys, var(--dim)); }
+.cover-note { display: block; margin-top: 6px; font-size: 11px; color: var(--dim); line-height: 1.5; }
+.cover-badge { position: absolute; left: 6px; bottom: 6px; background: rgba(0,0,0,0.78); border: 1px solid #3ddc6a; color: #3ddc6a; font-size: 9px; letter-spacing: 1.5px; padding: 3px 6px; border-radius: 4px; }
+.fav-btn { position: absolute; top: 6px; right: 6px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,0.72); color: #888; font-size: 16px; line-height: 32px; cursor: pointer; opacity: 0; transition: opacity 0.12s, transform 0.12s; }
+.cover-card:hover .fav-btn, .cover-card:focus-within .fav-btn, .fav-btn.on { opacity: 1; }
+.fav-btn.on { color: var(--gold); text-shadow: 0 0 8px rgba(255,220,0,0.7); }
+.fav-btn:hover { transform: scale(1.15); color: var(--gold); }
+@media (hover: none) { .fav-btn { opacity: 1; } }
+.game-list.rows .cover-card { display: flex; gap: 14px; align-items: flex-start; background: rgba(255,255,255,0.03); border: 1px solid var(--line); padding: 12px; }
+.game-list.rows .cover-art { flex: 0 0 96px; }
+.game-list.rows .cover-name { margin-top: 2px; font-size: 14px; }
+.empty-note { color: var(--dim); font-size: 13px; letter-spacing: 1px; padding: 30px 0; }
+.btn-back { margin-bottom: 20px; padding: 10px 20px; font-size: 12px; border-radius: 50px; }
+@media (max-width: 640px) { .game-list { grid-template-columns: repeat(3, 1fr); gap: 14px 10px; } .cover-name { font-size: 11px; } }
+
+/* ---------- play screen: the whole TV fits the window ---------- */
+#playing.active { padding-left: 12px; padding-right: 12px; padding-top: calc(var(--head) + 12px); padding-bottom: 8px; }
+#playing .btn-back { margin-bottom: 4px; padding: 7px 16px; font-size: 11px; }
+.playing-box { padding: 0; background: none; }
+.playing-now { display: none; }
+#gr-now { display: none; flex: 1; min-width: 0; align-items: baseline; justify-content: center; gap: 14px; overflow: hidden; white-space: nowrap; }
+body[data-screen="playing"] #gr-now { display: flex; }
+body[data-screen="playing"] #gr-search-wrap, body[data-screen="playing"] #gr-time { display: none; }
+#gr-now .playing-title { margin: 0; font-size: 16px; overflow: hidden; text-overflow: ellipsis; }
+#gr-now .playing-system { margin: 0; font-size: 11px; }
+#gr-now #session-timer { margin: 0; font-size: 12px; }
+@media (max-width: 900px) { #gr-now .playing-system { display: none; } #gr-now #session-timer { font-size: 10px; letter-spacing: 1px; } }
+.crt-room .crt-tv, .crt-tv { margin-top: 62px; margin-bottom: 6px; max-width: min(1100px, calc((100vh - var(--head) - 300px) * 1.3333 + 88px)); min-width: 300px; }
+#emulator-container { max-width: none; min-height: 0; aspect-ratio: 4 / 3; }
+.crt-panel { padding: 10px 6px 2px; gap: 12px; }
+.crt-btn { background: linear-gradient(#e8e0c8, #bfb591); color: #3a2a10; font-family: inherit; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 8px 16px; border-radius: 6px; border: 1px solid #5a4520; box-shadow: 0 3px 0 rgba(0,0,0,0.5); cursor: pointer; white-space: nowrap; }
+.crt-btn:hover { background: linear-gradient(#fff6d8, #d8cc9c); }
+.crt-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.5); }
+@media (max-width: 700px) { .crt-grille, .crt-knob { display: none; } .crt-panel { justify-content: center; flex-wrap: wrap; } }
+
+/* ---------- panels (saves, controller, resume) ---------- */
+.gr-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.82); align-items: center; justify-content: center; padding: 16px; }
+.gr-modal.active { display: flex; }
+.gr-box { background: var(--panel); border: 2px solid var(--gold); border-radius: 16px; padding: 26px; width: 100%; max-width: 640px; max-height: 92vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
+.gr-box h2 { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 14px; color: var(--gold); margin-bottom: 8px; line-height: 1.6; }
+.gr-box p { font-size: 13px; color: #b9b9c6; line-height: 1.6; letter-spacing: 0.5px; margin-bottom: 14px; }
+.gr-box p b { color: #fff; }
+.gr-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.gr-btn { flex: 1; background: var(--gold); color: #0a0a0f; border: none; font-family: inherit; font-weight: bold; font-size: 13px; letter-spacing: 2px; padding: 13px 16px; border-radius: 8px; cursor: pointer; }
+.gr-btn.ghost { background: transparent; color: #ccc; border: 2px solid var(--line); }
+.gr-btn.ghost:hover { border-color: #888; color: #fff; }
+.gr-btn.small { flex: none; font-size: 11px; padding: 8px 12px; letter-spacing: 1.5px; }
+.gr-btn.danger { background: transparent; color: #ff6b70; border: 2px solid #5a2326; }
+.gr-btn:disabled { opacity: 0.35; cursor: default; }
+.save-slot { display: flex; gap: 14px; align-items: center; background: #0b0b12; border: 2px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+.save-slot .shot { flex: 0 0 120px; height: 90px; border-radius: 6px; background: #000 center / contain no-repeat; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #444; font-size: 11px; letter-spacing: 2px; }
+.save-slot .meta { flex: 1; min-width: 0; }
+.save-slot .meta b { display: block; font-size: 13px; letter-spacing: 2px; color: #fff; margin-bottom: 4px; }
+.save-slot .meta span { font-size: 12px; color: var(--dim); letter-spacing: 1px; }
+.save-slot .btns { display: flex; flex-direction: column; gap: 6px; }
+.save-slot.has { border-color: #3a3a52; }
+#resume-shot { width: 100%; max-width: 320px; aspect-ratio: 4 / 3; margin: 0 auto 14px; border-radius: 8px; border: 2px solid var(--line); background: #000 center / contain no-repeat; }
+.pad-steps { counter-reset: st; margin: 0 0 14px; padding: 0; list-style: none; }
+.pad-steps li { counter-increment: st; position: relative; padding: 0 0 8px 34px; font-size: 13px; color: #c9c9d6; line-height: 1.55; }
+.pad-steps li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: #000; font-weight: bold; font-size: 12px; text-align: center; line-height: 22px; }
+.pad-card { background: #0b0b12; border: 2px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.pad-card .pid { font-size: 12px; color: #fff; letter-spacing: 1px; overflow-wrap: anywhere; }
+.pad-card .pmap { font-size: 11px; letter-spacing: 1.5px; margin: 4px 0 10px; color: var(--dim); }
+.pad-card .pmap.ok { color: #3ddc6a; } .pad-card .pmap.odd { color: #ff9a3c; }
+.pad-keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.pad-keys i { font-style: normal; font-size: 11px; letter-spacing: 1px; padding: 5px 8px; border-radius: 6px; border: 1px solid #333; color: #777; min-width: 34px; text-align: center; }
+.pad-keys i.down { background: var(--gold); border-color: var(--gold); color: #000; font-weight: bold; }
+.pad-raw { margin-top: 8px; font-size: 11px; color: #777; letter-spacing: 1px; min-height: 16px; }
+#pad-wizard { font-size: 15px; color: #fff; letter-spacing: 1px; text-align: center; padding: 22px 10px; border: 2px dashed var(--gold); border-radius: 12px; margin-bottom: 12px; display: none; }
+#pad-wizard b { color: var(--gold); font-size: 20px; }
+#gr-toast { position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(20px); z-index: 980; background: #0b0b12; border: 2px solid var(--gold); color: #fff; font-size: 13px; letter-spacing: 1.5px; padding: 12px 20px; border-radius: 50px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+#gr-toast.show { opacity: 1; transform: translateX(-50%); }
+
+/* Christmas: a string of lights under the header */
+#gr-lights { display: none; position: fixed; top: var(--head); left: 0; right: 0; height: 22px; z-index: 590; pointer-events: none; overflow: hidden; }
+body.in[data-season="christmas"] #gr-lights { display: block; }
+#gr-lights i { position: absolute; inset: 0; background-repeat: repeat-x; background-size: 80px 22px; }
+#gr-lights .la { background-image: radial-gradient(circle at 10px 11px, #ff3b3b 0 4px, rgba(255,59,59,0.4) 5px, transparent 10px), radial-gradient(circle at 50px 11px, #3bd1ff 0 4px, rgba(59,209,255,0.4) 5px, transparent 10px); animation: lightsA 1.6s steps(1) infinite; }
+#gr-lights .lb { background-image: radial-gradient(circle at 30px 11px, #ffd23b 0 4px, rgba(255,210,59,0.4) 5px, transparent 10px), radial-gradient(circle at 70px 11px, #4cff6a 0 4px, rgba(76,255,106,0.4) 5px, transparent 10px); animation: lightsB 1.6s steps(1) infinite; }
+@media (prefers-reduced-motion: reduce) { #season-fx { display: none; } .cover-card { animation: none; } }
+
+/* covers that are wider than the frame get a soft blurred copy of themselves behind them */
+.cover-art .cover-blur { position: absolute; inset: -12px; background: center / cover no-repeat; filter: blur(14px) brightness(0.55) saturate(1.2); }
+/* play screen header: the game's name always gets room */
+body[data-screen="playing"] #gr-season { display: none; }
+#gr-now .playing-title { flex: 0 1 auto; min-width: 80px; }
+#gr-now .playing-system, #gr-now #session-timer { flex: 0 0 auto; }
+@media (max-width: 640px) { #gr-time { display: none; } #gr-logo { font-size: 10px; } #gr-search-wrap { min-width: 0; } }
