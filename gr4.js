@@ -480,11 +480,63 @@ if (warnTitle) warnTitle.textContent = '⏰ 1 MINUTE LEFT';
 
 // a shorter emulator toolbar: Game Room has its own saves and its own way out (which auto-saves)
 window.EJS_Buttons = { cacheManager: false, saveSavFiles: false, loadSavFiles: false, contextMenu: false, exitEmulation: false, screenRecord: false };
+// ---------------------------------------------------------------- the console "plugged into" the TV
+// Small drawings (220 x 70) that sit in front of the TV's feet; the one for the current system is shown.
+var CONSOLE_ART = {
+  nes: '<rect x="28" y="14" width="164" height="26" rx="3" fill="#dcd9d2"/><rect x="28" y="38" width="164" height="24" rx="2" fill="#8f8c86"/><rect x="28" y="36" width="164" height="4" fill="#26262a"/>' +
+       '<rect x="36" y="18" width="104" height="14" rx="1" fill="#cbc8c0"/><path d="M36 22h104M36 26h104M36 30h104" stroke="#b5b2aa" stroke-width="1"/>' +
+       '<rect x="38" y="44" width="46" height="12" rx="1" fill="#26262a"/><circle cx="44" cy="50" r="2" fill="#ff3b2f"/><rect x="50" y="47" width="13" height="6" fill="#b3261e"/><rect x="67" y="47" width="13" height="6" fill="#b3261e"/>' +
+       '<rect x="122" y="45" width="26" height="11" rx="1" fill="#1a1a1c"/><rect x="156" y="45" width="26" height="11" rx="1" fill="#1a1a1c"/><path d="M127 50h16M161 50h16" stroke="#555" stroke-width="2" stroke-dasharray="2 2"/>',
+  snes: '<path d="M26 60 Q26 20 40 18 H180 Q194 20 194 60 Z" fill="#cfccd6"/><rect x="26" y="52" width="168" height="10" rx="2" fill="#a9a6b2"/>' +
+        '<rect x="66" y="22" width="88" height="14" rx="3" fill="#3a3842"/><rect x="72" y="25" width="76" height="8" rx="2" fill="#1c1b22"/>' +
+        '<rect x="40" y="28" width="18" height="12" rx="2" fill="#7b5fc4"/><rect x="162" y="28" width="18" height="12" rx="2" fill="#7b5fc4"/><rect x="96" y="40" width="28" height="8" rx="2" fill="#8d8a98"/>' +
+        '<rect x="48" y="54" width="22" height="6" rx="1" fill="#55535e"/><rect x="78" y="54" width="22" height="6" rx="1" fill="#55535e"/><circle cx="182" cy="57" r="2" fill="#ff3b2f"/>',
+  genesis: '<path d="M24 60 L32 22 Q34 18 40 18 H180 Q186 18 188 22 L196 60 Z" fill="#1b1b20"/><rect x="24" y="56" width="172" height="6" rx="2" fill="#0d0d10"/>' +
+           '<circle cx="110" cy="36" r="17" fill="#26262c" stroke="#3a3a42" stroke-width="2"/><rect x="92" y="32" width="36" height="8" rx="2" fill="#0a0a0c"/>' +
+           '<rect x="40" y="28" width="26" height="5" rx="2" fill="#c8281e"/><rect x="40" y="38" width="12" height="6" rx="1" fill="#55555e"/><rect x="150" y="30" width="30" height="4" rx="2" fill="#44444c"/><rect x="158" y="28" width="8" height="8" rx="1" fill="#88888f"/>' +
+           '<rect x="36" y="50" width="60" height="3" fill="#c8281e"/><circle cx="184" cy="50" r="2" fill="#ff3b2f"/>',
+  n64: '<path d="M22 60 Q20 34 46 30 Q70 16 110 16 Q150 16 174 30 Q200 34 198 60 Z" fill="#2c2c33"/><rect x="22" y="56" width="176" height="6" rx="3" fill="#18181c"/>' +
+       '<rect x="78" y="20" width="64" height="12" rx="3" fill="#121215"/><ellipse cx="52" cy="38" rx="12" ry="5" fill="#3a3a43"/><ellipse cx="168" cy="38" rx="12" ry="5" fill="#3a3a43"/>' +
+       '<circle cx="46" cy="50" r="5" fill="#0e0e11"/><circle cx="68" cy="50" r="5" fill="#0e0e11"/><circle cx="152" cy="50" r="5" fill="#0e0e11"/><circle cx="174" cy="50" r="5" fill="#0e0e11"/>' +
+       '<rect x="102" y="44" width="5" height="5" fill="#e03a2f"/><rect x="108" y="44" width="5" height="5" fill="#2f8fe0"/><rect x="102" y="50" width="5" height="5" fill="#f2c21e"/><rect x="108" y="50" width="5" height="5" fill="#3aa84a"/><circle cx="124" cy="50" r="2" fill="#ff3b2f"/>',
+  gameboy: '<g transform="translate(86 2)"><path d="M0 4 Q0 0 4 0 H44 Q48 0 48 4 V56 Q48 66 36 66 H4 Q0 66 0 62 Z" fill="#c9c7be"/><rect x="5" y="5" width="38" height="28" rx="2" fill="#5a5d66"/><rect x="10" y="9" width="28" height="20" fill="#9bbc0f"/>' +
+           '<rect x="8" y="41" width="12" height="4" fill="#26262a"/><rect x="12" y="37" width="4" height="12" fill="#26262a"/><circle cx="33" cy="45" r="3.4" fill="#a8245c"/><circle cx="41" cy="40" r="3.4" fill="#a8245c"/>' +
+           '<rect x="16" y="56" width="7" height="2.5" rx="1" fill="#77756e" transform="rotate(-25 19 57)"/><rect x="25" y="56" width="7" height="2.5" rx="1" fill="#77756e" transform="rotate(-25 28 57)"/><circle cx="7" cy="14" r="1.2" fill="#ff3b2f"/></g>',
+  gbc: '<g transform="translate(87 2)"><path d="M0 4 Q0 0 4 0 H42 Q46 0 46 4 V58 Q46 66 23 66 Q0 66 0 58 Z" fill="#6a4fc4"/><rect x="5" y="5" width="36" height="28" rx="2" fill="#26262c"/><rect x="9" y="8" width="28" height="22" fill="#7ad0e8"/>' +
+       '<rect x="9" y="8" width="7" height="22" fill="#e85a5a"/><rect x="16" y="8" width="7" height="22" fill="#f2c21e"/><rect x="23" y="8" width="7" height="22" fill="#4cc86a"/>' +
+       '<rect x="7" y="42" width="12" height="4" fill="#1c1c20"/><rect x="11" y="38" width="4" height="12" fill="#1c1c20"/><circle cx="31" cy="46" r="3.4" fill="#1c1c20"/><circle cx="39" cy="41" r="3.4" fill="#1c1c20"/><circle cx="6" cy="14" r="1.2" fill="#ff3b2f"/></g>',
+  gba: '<path d="M40 16 H180 Q200 18 204 38 Q204 58 186 60 H34 Q16 58 16 38 Q20 18 40 16 Z" fill="#5a3fb0"/><rect x="70" y="20" width="80" height="36" rx="3" fill="#1c1c22"/><rect x="77" y="24" width="66" height="28" fill="#8fd08f"/>' +
+       '<rect x="34" y="35" width="20" height="6" fill="#26262c"/><rect x="41" y="28" width="6" height="20" fill="#26262c"/><circle cx="170" cy="42" r="6" fill="#d8d6e0"/><circle cx="186" cy="34" r="6" fill="#d8d6e0"/>' +
+       '<rect x="36" y="13" width="30" height="5" rx="2" fill="#463090"/><rect x="154" y="13" width="30" height="5" rx="2" fill="#463090"/><circle cx="160" cy="54" r="1.5" fill="#3ddc6a"/>',
+  gamegear: '<path d="M30 12 H190 Q206 14 206 36 Q206 60 190 62 H30 Q14 60 14 36 Q14 14 30 12 Z" fill="#17171b"/><rect x="68" y="18" width="84" height="40" rx="3" fill="#0a0a0c" stroke="#2a2a30"/><rect x="76" y="23" width="68" height="30" fill="#3a78c8"/>' +
+            '<circle cx="42" cy="38" r="12" fill="#26262c"/><rect x="33" y="35" width="18" height="6" fill="#55555e"/><rect x="39" y="29" width="6" height="18" fill="#55555e"/>' +
+            '<circle cx="170" cy="42" r="6" fill="#33333a"/><circle cx="186" cy="34" r="6" fill="#33333a"/><rect x="164" y="18" width="16" height="4" rx="2" fill="#2f6fd0"/><path d="M76 53 h20 M100 53 h20 M124 53 h20" stroke="#e03a2f" stroke-width="1.5"/>',
+  nds: '<g transform="translate(74 0)"><rect x="0" y="2" width="72" height="32" rx="3" fill="#c9ccd4"/><rect x="14" y="6" width="44" height="24" fill="#1c1c22"/><rect x="17" y="8" width="38" height="20" fill="#7ad0e8"/>' +
+       '<rect x="0" y="34" width="72" height="3" fill="#8d9099"/><rect x="0" y="37" width="72" height="31" rx="3" fill="#b9bcc6"/><rect x="18" y="41" width="36" height="23" fill="#1c1c22"/><rect x="20" y="43" width="32" height="19" fill="#bfe8a8"/>' +
+       '<rect x="4" y="50" width="10" height="3" fill="#44464e"/><rect x="7.5" y="46.5" width="3" height="10" fill="#44464e"/><circle cx="60" cy="52" r="2" fill="#44464e"/><circle cx="66" cy="48" r="2" fill="#44464e"/><circle cx="66" cy="56" r="2" fill="#44464e"/><circle cx="5" cy="40.5" r="1" fill="#3ddc6a"/></g>',
+  mame: '<path d="M30 62 L40 34 H180 L190 62 Z" fill="#1a1a20"/><rect x="26" y="58" width="168" height="6" rx="2" fill="#0c0c10"/><path d="M40 34 H180 L176 28 H44 Z" fill="#ff6600"/>' +
+        '<rect x="67" y="18" width="4" height="26" fill="#9a9aa2"/><circle cx="69" cy="15" r="9" fill="#e0281e"/><ellipse cx="66" cy="12" rx="3" ry="2" fill="rgba(255,255,255,0.5)"/><ellipse cx="69" cy="45" rx="12" ry="4" fill="#33333a"/>' +
+        '<circle cx="112" cy="44" r="7" fill="#f2c21e"/><circle cx="134" cy="40" r="7" fill="#2f8fe0"/><circle cx="156" cy="44" r="7" fill="#3aa84a"/><circle cx="123" cy="55" r="5" fill="#e0e0e6"/><circle cx="145" cy="55" r="5" fill="#e0e0e6"/>',
+  lab: '<rect x="40" y="22" width="140" height="40" rx="3" fill="#0f6b4a"/><path d="M52 34h30v10h24M150 30v14h-22M60 54h60" stroke="#3ddc9a" stroke-width="1.5" fill="none"/>' +
+       '<rect x="88" y="30" width="34" height="18" rx="1" fill="#16161a"/><path d="M92 30v-3M100 30v-3M108 30v-3M116 30v-3M92 48v3M100 48v3M108 48v3M116 48v3" stroke="#c9c9d2" stroke-width="2"/>' +
+       '<circle cx="54" cy="52" r="3" fill="#ff3b2f"/><circle cx="64" cy="52" r="3" fill="#ffd34d"/><circle cx="74" cy="52" r="3" fill="#3ddc6a"/><rect x="140" y="46" width="28" height="10" rx="1" fill="#c9a43a"/><path d="M144 46v10M150 46v10M156 46v10M162 46v10" stroke="#8a6d1a" stroke-width="1"/>' +
+       '<rect x="150" y="14" width="18" height="10" rx="1" fill="#26262c"/>'
+};
+var consoleEl = el('div', 'crt-console');
+(function() { var tv = document.querySelector('.crt-tv'); if (tv) tv.appendChild(consoleEl); })();
+window.grSetConsole = setConsole;      // handy for previewing: grSetConsole('n64')
+function setConsole(sys) {
+  var art = CONSOLE_ART[sys];
+  consoleEl.style.display = art ? 'block' : 'none';
+  if (art) consoleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 70" role="img" aria-label="' + ((SYSTEMS[sys] || {}).label || sys) + ' console"><ellipse cx="110" cy="64" rx="96" ry="5" fill="rgba(0,0,0,0.45)"/>' + art + '</svg>';
+}
+
 var baseOpenGame = openGame;
 window.openGame = openGame = function(game) {
   if (isOverLimit()) return baseOpenGame(game);
   cur = { sys: currentSystem, title: game.title, key: gameKey(currentSystem, game.title) };
   padSent = [];
+  setConsole(currentSystem);
   baseOpenGame(game);
   if (game.file) addRecent(currentSystem, game.title);
 };

@@ -98,7 +98,7 @@ body[data-screen="playing"] #gr-search-wrap, body[data-screen="playing"] #gr-tim
 #gr-now .playing-system { margin: 0; font-size: 11px; }
 #gr-now #session-timer { margin: 0; font-size: 12px; }
 @media (max-width: 900px) { #gr-now .playing-system { display: none; } #gr-now #session-timer { font-size: 10px; letter-spacing: 1px; } }
-.crt-room .crt-tv, .crt-tv { margin-top: 62px; margin-bottom: 6px; max-width: min(1100px, calc((100vh - var(--head) - 300px) * 1.3333 + 88px)); min-width: 300px; }
+.crt-room .crt-tv, .crt-tv { margin-top: 62px; margin-bottom: 62px; max-width: min(1100px, calc((100vh - var(--head) - 348px) * 1.3333 + 88px)); min-width: 300px; }
 #emulator-container { max-width: none; min-height: 0; aspect-ratio: 4 / 3; }
 .crt-panel { padding: 10px 6px 2px; gap: 12px; }
 .crt-btn { background: linear-gradient(#e8e0c8, #bfb591); color: #3a2a10; font-family: inherit; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 8px 16px; border-radius: 6px; border: 1px solid #5a4520; box-shadow: 0 3px 0 rgba(0,0,0,0.5); cursor: pointer; white-space: nowrap; }
@@ -168,3 +168,15 @@ body[data-screen="playing"] #gr-season { display: none; }
 .cover-card:hover .rm-btn, .cover-card:focus-within .rm-btn { opacity: 1; }
 .rm-btn:hover { background: #c0282d; color: #fff; transform: scale(1.12); }
 @media (hover: none) { .rm-btn { opacity: 1; } }
+
+/* the console sitting in front of the TV, with its cable running up behind the cabinet */
+.crt-console { display: none; position: absolute; left: 50%; top: 100%; width: clamp(190px, 36%, 290px); transform: translateX(-50%); margin-top: -10px; z-index: 3; pointer-events: none; filter: drop-shadow(0 5px 4px rgba(0,0,0,0.55)); }
+.crt-console::before { content: ''; position: absolute; left: 50%; top: -6px; width: 5px; height: 26px; margin-left: -2.5px; background: linear-gradient(90deg, #050505, #3a3a3a 50%, #050505); border-radius: 3px; z-index: -1; }
+.crt-console svg { display: block; width: 100%; height: auto; }
+.crt-side { margin-bottom: 60px; }
+.crt-knob, .crt-led, .crt-brand, .crt-btn { flex: none; }
+/* the front panel drops its dials when the TV is narrow, so the buttons always fit */
+.crt-cabinet { container-type: inline-size; }
+.crt-panel { justify-content: center; }
+@container (max-width: 700px) { .crt-knob, .crt-grille { display: none; } }
+@container (max-width: 470px) { .crt-brand { display: none; } .crt-btn { padding: 7px 10px; font-size: 11px; letter-spacing: 1px; } }
