@@ -52,11 +52,16 @@ var homeSub = document.querySelector('#systems .page-sub'); if (homeSub) homeSub
 function favs() { return jget('grFavs', []); }
 function isFav(key) { return favs().indexOf(key) >= 0; }
 function toggleFav(key) { var f = favs(), i = f.indexOf(key); if (i >= 0) f.splice(i, 1); else f.unshift(key); jset('grFavs', f); return i < 0; }
-function recents() { return jget('grRecent', []); }
+var RECENT_MAX = 6, RECENT_DAYS = 30;      // the shelf keeps the last 6 games, and drops any not played for a month
+function recents() {
+  var cut = Date.now() - RECENT_DAYS * 86400000;
+  return jget('grRecent', []).filter(function(x) { return x && x.k && x.at > cut; }).slice(0, RECENT_MAX);
+}
+function removeRecent(key) { jset('grRecent', recents().filter(function(x) { return x.k !== key; })); }
 function addRecent(sys, title) {
   var key = gameKey(sys, title), r = recents().filter(function(x) { return x.k !== key; });
   r.unshift({ k: key, at: Date.now() });
-  jset('grRecent', r.slice(0, 12));
+  jset('grRecent', r.slice(0, RECENT_MAX));
 }
 function saveIndex() { return jget('grSaveIdx', {}); }
 
@@ -104,7 +109,15 @@ function coverCard(sys, game, opts) {
   var name = el('div', 'cover-name');
   name.textContent = game.title;
   if (opts.showSystem) { var s = el('span', 'cover-sys'); s.textContent = (SYSTEMS[sys] || {}).label || sys; name.appendChild(s); }
-  if (game.note) { var n = el('span', 'cover-note'); n.textContent = (game.version ? game.version + ' - ' : '') + game.note; name.appendChild(n); }
+  if (game.note && !opts.noNote) { var n = el('span', 'cover-note'); n.textContent = (game.version ? game.version + ' - ' : '') + game.note; name.appendChild(n); }
+  if (opts.onRemove) {
+    var x = el('button', 'rm-btn', '&#10005;');
+    x.type = 'button';
+    x.title = 'Remove from this list';
+    x.onclick = function(e) { e.stopPropagation(); opts.onRemove(key); };
+    x.onkeydown = function(e) { e.stopPropagation(); };
+    art.appendChild(x);
+  }
   card.appendChild(name);
   makeActivatable(card, function() { currentSystem = sys; openGame(game); });
   return card;
@@ -144,11 +157,11 @@ grid.parentNode.insertBefore(shelves, grid);
 var sysHead = el('div', 'shelf-title', 'SYSTEMS <small>PICK ONE</small>');
 grid.parentNode.insertBefore(sysHead, grid);
 
-function shelf(title, hint, entries) {
+function shelf(title, hint, entries, extra) {
   var box = el('div', 'shelf');
   box.appendChild(el('div', 'shelf-title', title + ' <small>' + hint + '</small>'));
   var row = el('div', 'shelf-row');
-  entries.forEach(function(e) { row.appendChild(coverCard(e.sys, e.game, { showSystem: true })); });
+  entries.forEach(function(e) { row.appendChild(coverCard(e.sys, e.game, { showSystem: true, noNote: true, onRemove: extra && extra.onRemove })); });
   box.appendChild(row);
   return box;
 }
@@ -163,7 +176,7 @@ function keysToEntries(keys) {
 function renderHome() {
   shelves.innerHTML = '';
   var rec = keysToEntries(recents().map(function(r) { return r.k; }));
-  if (rec.length) shelves.appendChild(shelf('CONTINUE PLAYING', 'YOUR LAST GAMES', rec.slice(0, 10)));
+  if (rec.length) shelves.appendChild(shelf('CONTINUE PLAYING', 'YOUR LAST GAMES', rec, { onRemove: function(key) { removeRecent(key); renderHome(); } }));
   var fv = keysToEntries(favs());
   if (fv.length) shelves.appendChild(shelf('&#9733; FAVORITES', fv.length + (fv.length === 1 ? ' GAME' : ' GAMES'), fv));
   else if (rec.length) shelves.appendChild(el('div', 'empty-note', 'Tip: hover a game and click the &#9733; to add it to your favorites.')).style.padding = '0 0 24px';

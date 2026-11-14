@@ -162,3 +162,9 @@ body[data-screen="playing"] #gr-season { display: none; }
 
 .crt-brand { white-space: nowrap; }
 @media (max-width: 1100px) { .crt-grille { display: none; } .crt-panel { justify-content: center; } }
+
+/* remove-from-list button on the Continue Playing shelf */
+.rm-btn { position: absolute; top: 6px; left: 6px; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(0,0,0,0.78); color: #bbb; font-size: 13px; line-height: 28px; cursor: pointer; opacity: 0; transition: opacity 0.12s, transform 0.12s; }
+.cover-card:hover .rm-btn, .cover-card:focus-within .rm-btn { opacity: 1; }
+.rm-btn:hover { background: #c0282d; color: #fff; transform: scale(1.12); }
+@media (hover: none) { .rm-btn { opacity: 1; } }
