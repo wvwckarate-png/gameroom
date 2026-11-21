@@ -2,7 +2,7 @@
    Loaded after the inline styles in index.html, so rules here win. */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-:root { --gold: #ffdc00; --ink: #0a0a0f; --panel: #12121b; --line: #2a2a38; --dim: #9a9aa8; --season: #ffdc00; --head: 60px; }
+:root { --gold: #ffdc00; --ink: #0a0a0f; --panel: #12121b; --line: #2a2a38; --dim: #9a9aa8; --season: #ffdc00; --head: 60px; --foot: 34px; }
 
 body { background: radial-gradient(1200px 700px at 50% -10%, #17172a 0%, #0a0a0f 60%) fixed, #0a0a0f; }
 body::before { opacity: 0.45; }                       /* scanlines: softer, so box art stays clean */
@@ -36,8 +36,10 @@ body:not(.in) .play-online-btn { display: none; }
 @media (max-width: 640px) { #gr-header { gap: 8px; padding: 0 10px; } #gr-pad span, #gr-header .play-online-btn { display: none; } }
 
 /* ---------- footer: part of the page, no longer floating over things ---------- */
-.site-footer { position: relative; z-index: 1; background: none; padding: 26px 14px 22px; font-size: 11px; letter-spacing: 3px; color: #8d7f2c; }
-.screen { min-height: calc(100vh - 70px); padding-bottom: 30px; }
+.site-footer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 550; height: var(--foot); display: flex; align-items: center; justify-content: center; padding: 0 14px; font-size: 11px; letter-spacing: 3px; color: #c9b23a; white-space: nowrap; overflow: hidden;
+  background: linear-gradient(#0d0d15, #14141f); border-top: 2px solid var(--line); box-shadow: 0 -2px 0 color-mix(in srgb, var(--season) 55%, transparent), 0 -8px 20px rgba(0,0,0,0.45); }
+@media (max-width: 760px) { .site-footer { font-size: 9px; letter-spacing: 1.5px; } }
+.screen { min-height: 100vh; padding-bottom: calc(var(--foot) + 30px); }
 
 /* ---------- headings and small text: bigger, brighter ---------- */
 .page-title { font-family: 'Press Start 2P', 'Courier New', monospace; font-size: clamp(16px, 2.4vw, 24px); letter-spacing: 1px; }
@@ -87,7 +89,7 @@ body:not(.in) .play-online-btn { display: none; }
 @media (max-width: 640px) { .game-list { grid-template-columns: repeat(3, 1fr); gap: 14px 10px; } .cover-name { font-size: 11px; } }
 
 /* ---------- play screen: the whole TV fits the window ---------- */
-#playing.active { padding-left: 12px; padding-right: 12px; padding-top: calc(var(--head) + 12px); padding-bottom: 8px; }
+#playing.active { padding-left: 12px; padding-right: 12px; padding-top: calc(var(--head) + 12px); padding-bottom: calc(var(--foot) + 8px); }
 #playing .btn-back { margin-bottom: 4px; padding: 7px 16px; font-size: 11px; }
 .playing-box { padding: 0; background: none; }
 .playing-now { display: none; }
@@ -98,7 +100,7 @@ body[data-screen="playing"] #gr-search-wrap, body[data-screen="playing"] #gr-tim
 #gr-now .playing-system { margin: 0; font-size: 11px; }
 #gr-now #session-timer { margin: 0; font-size: 12px; }
 @media (max-width: 900px) { #gr-now .playing-system { display: none; } #gr-now #session-timer { font-size: 10px; letter-spacing: 1px; } }
-.crt-room .crt-tv, .crt-tv { margin-top: 62px; margin-bottom: 118px; max-width: min(1100px, calc((100vh - var(--head) - 372px) * 1.3333 + 88px)); min-width: 300px; }
+.crt-room .crt-tv, .crt-tv { margin-top: 62px; margin-bottom: 118px; max-width: min(1100px, calc((100vh - var(--head) - var(--foot) - 372px) * 1.3333 + 88px)); min-width: 300px; }
 #emulator-container { max-width: none; min-height: 0; aspect-ratio: 4 / 3; }
 .crt-panel { padding: 10px 6px 2px; gap: 12px; }
 .crt-btn { background: linear-gradient(#e8e0c8, #bfb591); color: #3a2a10; font-family: inherit; font-size: 12px; font-weight: bold; letter-spacing: 2px; padding: 8px 16px; border-radius: 6px; border: 1px solid #5a4520; box-shadow: 0 3px 0 rgba(0,0,0,0.5); cursor: pointer; white-space: nowrap; }
@@ -141,7 +143,7 @@ body[data-screen="playing"] #gr-search-wrap, body[data-screen="playing"] #gr-tim
 .pad-raw { margin-top: 8px; font-size: 11px; color: #777; letter-spacing: 1px; min-height: 16px; }
 #pad-wizard { font-size: 15px; color: #fff; letter-spacing: 1px; text-align: center; padding: 22px 10px; border: 2px dashed var(--gold); border-radius: 12px; margin-bottom: 12px; display: none; }
 #pad-wizard b { color: var(--gold); font-size: 20px; }
-#gr-toast { position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(20px); z-index: 980; background: #0b0b12; border: 2px solid var(--gold); color: #fff; font-size: 13px; letter-spacing: 1.5px; padding: 12px 20px; border-radius: 50px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+#gr-toast { position: fixed; left: 50%; bottom: calc(var(--foot) + 18px); transform: translateX(-50%) translateY(20px); z-index: 980; background: #0b0b12; border: 2px solid var(--gold); color: #fff; font-size: 13px; letter-spacing: 1.5px; padding: 12px 20px; border-radius: 50px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
 #gr-toast.show { opacity: 1; transform: translateX(-50%); }
 
 /* Christmas: a string of lights under the header */
