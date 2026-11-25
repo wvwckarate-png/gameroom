@@ -180,8 +180,57 @@ function keysToEntries(keys) {
   });
   return out;
 }
+// ---------------------------------------------------------------- today's pick
+// One classic per day (the same for everyone), taken from picks.js. The order is shuffled once per cycle so every game
+// comes up before any repeats, and two days in a row never share a system.
+function seeded(seed) { var a = seed >>> 0; return function() { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function pickPool() { return (window.GR_PICKS || []).filter(function(p) { return findGame(p[0], p[1]); }); }
+function pickOrder(pool, cycle) {
+  var rnd = seeded(cycle * 7919 + 13), order = pool.map(function(_, i) { return i; }), i, j, t;
+  for (i = order.length - 1; i > 0; i--) { j = Math.floor(rnd() * (i + 1)); t = order[i]; order[i] = order[j]; order[j] = t; }
+  for (i = 1; i < order.length; i++) {          // no two neighbours from the same system, where the shuffle allows it
+    if (pool[order[i]][0] !== pool[order[i - 1]][0]) continue;
+    for (j = i + 1; j < order.length; j++) if (pool[order[j]][0] !== pool[order[i - 1]][0] && (!order[i + 1] || pool[order[j]][0] !== pool[order[i + 1]][0])) { t = order[i]; order[i] = order[j]; order[j] = t; break; }
+  }
+  return order;
+}
+function dayNumber() { var d = new Date(); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+function todaysPick(offset) {
+  var pool = pickPool();
+  if (!pool.length) return null;
+  var n = dayNumber() + (offset || 0), len = pool.length, cycle = Math.floor(n / len);
+  return pool[pickOrder(pool, cycle)[((n % len) + len) % len]];
+}
+var pickOffset = 0;
+function pickCard() {
+  var p = todaysPick(pickOffset);
+  if (!p) return null;
+  var sys = p[0], game = findGame(sys, p[1]), color = (SYSTEMS[sys] || {}).color || '#ffdc00';
+  var box = el('div', 'pick-card');
+  box.style.setProperty('--sys', color);
+  box.appendChild(el('div', 'pick-flag', pickOffset ? '&#127922; ANOTHER SUGGESTION' : '&#127775; TODAY\'S PICK'));
+  var art = coverCard(sys, game, { noNote: true }).querySelector('.cover-art');
+  art.className += ' pick-art';
+  var body = el('div', 'pick-body');
+  var title = el('div', 'pick-title'); title.textContent = p[1];
+  var meta = el('div', 'pick-meta'); meta.textContent = ((SYSTEMS[sys] || {}).label || sys) + '  \u00B7  ' + p[2] + '  \u00B7  ' + p[3];
+  var why = el('div', 'pick-why'); why.textContent = p[4];
+  var go = el('button', 'gr-btn pick-go', '&#9654; PLAY NOW'); go.type = 'button';
+  go.onclick = function() { currentSystem = sys; openGame(game); };
+  var more = el('button', 'gr-btn ghost small pick-more', '&#127922; SHOW ME ANOTHER'); more.type = 'button';
+  more.onclick = function() { pickOffset += 1; renderHome(); };
+  var row = el('div', 'pick-actions'); row.appendChild(go); row.appendChild(more);
+  body.appendChild(title); body.appendChild(meta); body.appendChild(why); body.appendChild(row);
+  art.onclick = go.onclick;
+  box.appendChild(art); box.appendChild(body);
+  return box;
+}
+window.grTodaysPick = todaysPick;      // grTodaysPick(0) is today, grTodaysPick(1) tomorrow ...
+
 function renderHome() {
   shelves.innerHTML = '';
+  var pc = pickCard();
+  if (pc) shelves.appendChild(pc);
   var rec = keysToEntries(recents().map(function(r) { return r.k; }));
   if (rec.length) shelves.appendChild(shelf('CONTINUE PLAYING', 'YOUR LAST GAMES', rec, { onRemove: function(key) { removeRecent(key); renderHome(); } }));
   var fv = keysToEntries(favs());
